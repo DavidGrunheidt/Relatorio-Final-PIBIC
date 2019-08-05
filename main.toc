@@ -1,0 +1,13 @@
+\babel@toc {portuguese}{}
+\contentsline {section}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{}{section.1}% 
+\contentsline {subsection}{\numberline {1.1}Justificativa}{}{subsection.1.1}% 
+\contentsline {subsection}{\numberline {1.2}Objetivos}{}{subsection.1.2}% 
+\contentsline {section}{\numberline {2}Revis\IeC {\~a}o Bibliogr\IeC {\'a}fica}{}{section.2}% 
+\contentsline {subsection}{\numberline {2.1}MPPA-256}{}{subsection.2.1}% 
+\contentsline {subsection}{\numberline {2.2}Padr\IeC {\~a}o est\IeC {\^e}ncil e PSkel}{}{subsection.2.2}% 
+\contentsline {subsection}{\numberline {2.3}PSkel-MPPA}{}{subsection.2.3}% 
+\contentsline {subsection}{\numberline {2.4}Trabalhos Relacionados}{}{subsection.2.4}% 
+\contentsline {section}{\numberline {3}Proposta e implementa\IeC {\c c}\IeC {\~a}o de otimiza\IeC {\c c}\IeC {\~a}o no PSkel-MPPA}{}{section.3}% 
+\contentsline {section}{\numberline {4}Resultados}{}{section.4}% 
+\contentsline {section}{\numberline {5}Conclus\IeC {\~a}o}{}{section.5}% 
+\contentsline {section}{\numberline {6}Avalia\IeC {\c c}\IeC {\~a}o PIBIC: Benef\IeC {\'\i }cios e Forma\IeC {\c c}\IeC {\~a}o Cient\IeC {\'\i }fica}{}{section.6}% 

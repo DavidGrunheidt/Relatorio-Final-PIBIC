@@ -1,0 +1,257 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[charter]{mathdesign} % charter or utopia?
+\usepackage{multirow}
+\usepackage[pdftex]{hyperref}
+\usepackage{indentfirst}
+\usepackage{xspace}
+\usepackage[cm]{fullpage}
+\usepackage{color, colortbl}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{tabu}
+\usepackage{todonotes}
+\usepackage[acronym,nowarn]{glossaries}
+\input{acronyms.tex}
+\makeglossaries
+\usepackage{subfigure}
+
+\newcommand{\etal}{\textit{et al}.\xspace}
+\newcommand{\eg}{\textit{e.g}.,\xspace}
+\newcommand{\ie}{\textit{i.e}.,\xspace}
+\newcommand{\pskel}{PSkel\xspace}
+\newcommand{\pskelmppa}{PSkel-MPPA\xspace}
+\newcommand{\mppa}{MPPA-256\xspace}
+\newcommand{\fw}{\textit{framework}\xspace}
+\newcommand{\capb}{CAP Bench\xspace}
+\newcommand{\epiphany}{Adapteva Epiphany\xspace}
+\newcommand{\manycore}{\textit{manycore}\xspace}
+\newcommand{\bench}{\textit{benchmark}\xspace}
+
+\fancypagestyle{plain}{%
+	\renewcommand{\headrulewidth}{0pt}%
+	\fancyhf{}%
+	\fancyhead[C]{
+		\begin{tabular*}{1.012\textwidth}{l@{\extracolsep{\fill} }cr}
+			\multirow{2}{*}{\hspace{-0.3cm}\includegraphics[height=2cm, width=!]{./figs/ufsc.jpg}} & \hspace{0.8cm}Universidade Federal de Santa Catarina (UFSC) & \multirow{2}{*}{\includegraphics[height=2cm, width=!]{./figs/ine.pdf}} \\
+			& \hspace{0.8cm}Departamento de Informática e Estatística (INE) & \\
+		\end{tabular*}
+	}%
+}
+
+\title{\hspace{-0.6cm}\textbf{Relatório Final - PIBIC 2018/2019}\\[0.2cm] \hspace{-0.6cm}\textbf{Projeto:} Otimização do Benchmark \capb para o Processador Manycore de Baixo Consumo Energético \mppa}
+\author{\hspace{-0.6cm}\textbf{Bolsista:} David Grunheidt Vilela Ordine\\\hspace{-0.6cm}\textbf{Orientador:} Prof. Dr. Márcio Castro\\ \hspace{-0.6cm}\small{\emph{Laboratório de Pesquisa em Sistemas Distribuídos (LaPeSD), INE/UFSC}}}
+\date{\hspace{-0.6cm}\small{Florianópolis, \today}}
+\begin{document}
+\pagenumbering{gobble}%
+
+\maketitle
+
+\begin{abstract}
+Similar ao que aconteceu com os processadores \textit{single-core}, ao longo de sua evolução, as tecnologias voltadas para \hpc depararam-se com uma barreia de potencia, a qual torna desvantajoso o \textit{trade-off} entre gasto energético e ganho em desempenho. Desta maneira, um novo buraco dentro desta área de pesquisa surgiu, o qual foi preenchido com o ramo de processadores \manycore de baixo consumo energético, tais quais o \mppa e o \epiphany. Devido a questões arquiteturais, como a quantidade limitada de memoria em cada \cc e o não compartilhamento de memória entre \textit{clusters}, o desafio relacionado a estes processadores e, particularmente, ao \mppa, é a implementação de aplicações que beneficiam-se totalmente do seu \textit{hardware}. Neste projeto foram propostas otimizações para as aplicações do \capb, a fim de mostrar que, apesar dos desafios, são inúmeros os benefícios da utilização do \mppa, quando implementações são feitas de modo inteligente. Os resultados mostram que o novo \textit{benchmark} superou, em desempenho, até ...x a implementação anterior. \\
+
+\noindent\textbf{Palavras-chave}: \textit{manycores}, MPPA-256, comunicação assíncrona.
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+
+\section{Introdução}
+
+
+Para que os supercomputadores atuais consigam alcançar de forma definitiva a computação em \textit{exaescale}, é necessário que haja, de forma coesa, alto desempenho e consumo energético viável. Porém, assim como ocorreu com os avanços nas tecnologias de processadores \textit{single-core}, os quais permitiram aumento no desempenho de um processador a uma taxa anual de 40\% a 50\% nas ultimas três décadas \cite{Larus:2008:TM:1364782.1364800}, a dissipação de calor nos supercomputadores que utilizam processadores do tipo \textit{multicore} chegou a um ponto que não mais permitiu a escalabilidade proporcional das variáveis citadas.
+ 
+Seguindo os conceitos de \textit{Green Computing}, estudos foram realizados a fim de encontrar um \textit{trade-off} positivo entre desempenho e gasto energético, centrado na redução de gasto energético. O grande interesse da comunidade cientifica de \hpc acerca deste tema foi um dos responsáveis por alavancar a produção de novos tipos de processadores, tais quais os \textit{manycores} de baixa potencia \mppa \cite{MPPA-2:2013}, o SW26010, utilizado no supercomputador \textit{Sunway TaihuLight} \cite{sunway:2016} e o \epiphany  \cite{Olofsson2014}.
+
+
+\subsection{Justificativa}
+
+Os processadores \emph{manycore} apresentados anteriormente diferem dos processadores gráficos (\emph{Graphics Processing Units} -- GPUs), como já mencionado seus \emph{cores} são autônomos, o que possibilita a exploração de paralelismo de dados e tarefas. De modo geral, os processadores pertencentes à essa classe tem como características principais: (i) baixa potência (entre 10 W e 50 W); (ii) centenas ou até mesmo milhares de \emph{cores} em um único \emph{chip} operando em uma uma baixa frequência de relógio e (iii) pelo menos uma NoC para interconectar os \emph{cores} ou grupos de \emph{cores}. Uma outra arquitetura \emph{manycore} bastante conhecida na atualidade é a Intel Xeon Phi. Apesar de possuir algumas das características dos \emph{manycores} leves, a potência dissipada por esse processador é mais elevada (na ordem de 300 W). 
+
+Apesar de oferecerem potencialmente uma melhor eficiência energética quando comparados à processadores \emph{multicore} de propósito geral, os processadores \emph{manycore} leves apresentam diversas limitações que tornam o desenvolvimento de aplicações científicas eficientes um grande desafio~\cite{Castro:2013:ACE:2535753.2535757}.
+
+Normalmente, esses processadores são construídos e otimizados para certos tipos de classes de aplicações embarcadas como por exemplo decodificação de vídeo e roteamento. Além disso, grande parte desses processadores possuem restrições de memória, como por exemplo memórias \emph{cache} de tamanho bastante limitado. Também, esses processadores exigem que comunicações de dados estejam em conformidade com a topologia da NoC para que os custos de comunicação sejam consideravelmente reduzidos. Por fim, mostra-se necessário o uso de algoritmos de escalonamento inteligentes nesses processadores a fim de permitir uma melhor exploração dos núcleos de processamento. Para explorar de forma eficiente os recursos dos processadores \emph{manycores}, faz-se necessário considerar três diferentes níveis:
+
+\begin{enumerate}
+
+	\item \textbf{Nível aplicativo.} A grande maioria das aplicações científicas existentes são atualmente paralelizadas utilizando-se modelos de programação em memória compartilhada (por exemplo, POSIX threads e OpenMP) ou em memória distribuída (por exemplo, MPI). Porém, processadores manycore de baixo consumo como o MPPA-256 exigem a utilização de ambos os modelos de programação (compartilhado e distribuído). O desafio encontra-se em adaptar as aplicações científicas existentes para esse modelo híbrido, conforme as peculiaridades de cada arquitetura \emph{manycore}.
+		
+	\item \textbf{Nível intermediário.} A grande concentração de núcleos no mesmo \emph{chip} exige que os programas paralelos explorem de maneira eficaz os recursos computacionais. Para que isso seja possível, mostra-se necessária a utilização de algoritmos de escalonamento e balanceamento de carga inteligentes capazes de se adaptarem a carga de trabalho das aplicações paralelas, permitindo assim uma melhor distribuição das tarefas a serem computadas nos núcleos de processamento~\cite{penna:hal-01239916}. A implementação dos algoritmos de escalonamento de tarefas e o balanceamento de carga precisa ser feita no nível intermediário, \ie, no ambiente de execução (\emph{runtime}), para que as aplicações paralelas possam usufruir desses benefícios de maneira transparente.
+	
+	\item \textbf{Nível de \emph{hardware}.} A comunicação entre \emph{clusters} é realizada através de NoCs, as quais se baseiam nos conceitos utilizados nas redes de interconexão para computadores paralelos \cite{4586199}. Uma NoC pode ser definida como um conjunto de roteadores e canais ponto-a-ponto que interconectam os \emph{cores} ou grupos de \emph{cores} de modo a suportar a comunicação entre eles. Embora as NoCs permitam uma maior escalabilidade em arquiteturas \emph{manycore}, elas adicionam um certo custo ao sistema, pois os dados precisam trafegar através da rede. Portanto, tanto a estratégia de paralelização de uma aplicação científica quanto o ambiente de execução para \emph{manycores} devem sempre que possível evitar que processos em execução em \emph{cores} ou grupos de \emph{cores} muito distantes se comuniquem frequentemente, evitando assim gargalos de comunicação devido ao aumento do tempo de comunicação ou perdas de pacotes~\cite{5452474, 6112995}. 
+	
+\end{enumerate}
+
+\subsection{Objetivos}
+
+O objetivo desta pesquisa de iniciação científica é propor e implementar a otimização do \bench \capb para o processador \manycore de baixo consumo energético \mppa. Os objetivos específicos deste projeto de pesquisa estão abaixo elencados:
+
+\begin{enumerate}
+	\setlength\itemsep{0em}
+	\item Investigar a viabilidade do uso do \mppa para a computação científica de alto desempenho;
+	\item Estudar as \apis de comunicação existentes para o \mppa.
+	\item Implementar um conjunto de aplicações paralelas para o \mppa (\bench) utilizando-se da \api \async;
+	\item Avaliar os custos e benefícios do \mppa em relação ao desempenho e ao consumo de energia, assim como sua utilidade para a Computação Sustentável (\textit{Green Computing});
+	\item Difundir a pesquisa e os seus resultados através de produção científica de qualidade, em periódicos e eventos relevantes na área de Processamento Paralelo e Distribuído.
+\end{enumerate}
+
+Nas seções seguintes são apresentados o desenvolvimento e os resultados produzidos, de acordo com o cronograma e as atividades propostas deste projeto de pesquisa.
+
+\section{Revisão Bibliográfica}
+
+Esta seção apresenta a revisão bibliográfica sobre o processador \textit{manycore} \mppa e o \textit{framework} PSkel e sua adaptação utilizada nesse trabalho. Por fim, são apresentados alguns trabalhos relacionados.
+
+\subsection{MPPA-256}
+\label{subsec:mppa}
+
+O \mppa é um processador \textit{manycore} desenvolvido pela empresa francesa
+Kalray. Esse processador possui 256 núcleos e usuário e 32 núcleos de sistema para processamento a 400 MHz. Esses núcleos estão distribuídos entre 16 \emph{clusters} de computação e 4 \emph{clusters} de \emph{Input/Output}(\io), que se comunicam através de NoCs de dados e controle. O processador utilizado no desenvolver deste projeto de pesquisa possui uma memória global de baixa potência (LPDDR3) de 2GB conectada a um dos susistemas de \io. A arquitetura do \mppa é ilustrada na Figura~\ref{fig:mppaOverall}. Cada cluster de computação tem os seguintes componentes:
+
+\begin{itemize}
+    \item 16 núcleos chamados de \emph{Processing Elements} (\pes), que são responsáveis por executar as \emph{threads} de usuário (uma \emph{thread} por \pe), e não pode ser interrompida ou preemptada;
+    
+    \item um \emph{Resource Manager} (\rman), responsável por executar o sistema operacional e gerenciar a comunicação;
+    
+    \item uma memória compartilhada de baixa latência de 2MB, que permite um grande banda e fluxo e dados e controle entre os \pes presentes no mesmo \emph{cluster} de computação; e
+    
+    \item dois controladores de NoC, um para dados e outro para controle.
+    
+\end{itemize}
+
+
+\begin{figure}[t]
+	\centering
+	\subfigure[\mppa.]{\includegraphics[width=0.3\textwidth]{figs/mppa-overview.pdf}\label{fig:mppaOverall}}
+	\qquad
+	\subfigure[O padrão estêncil.]{\includegraphics[width=0.38\textwidth]{figs/stencilComputation.pdf}\label{fig:stencil}}
+    \caption{Visão geral do \mppa e do padrão estêncil~\cite{Castro-Podesta-ERAD:2017}.}
+    \label{fig:config}
+\end{figure}
+
+Trabalhos anteriores mostraram que desenvolver aplicações paralelas otimizadas
+para o \mppa é um grande desafio~\cite{Castro-IA3-JPDC:2014} devido a alguns
+fatores importantes, tais como: o modelo de memória distribuída presente no
+\mppa, a capacidade de memória dentro do \textit{chip} e a comunicação explícita
+através da \noc. Mais detalhes sobre esses desafios são apresentados em
+~\cite{Castro-Podesta-ERAD:2017}.
+
+\subsection{Padrão estêncil e PSkel}
+\label{subsec:pskel}
+
+O \pskel é um \fw de programação em alto nível para aplicações baseadas no
+padrão estêncil, baseado no conceito de esqueletos paralelos, oferecendo suporte para a execução dessas aplicações em
+ambientes heterogêneos, incluindo \cpu e \gpu. \pskel oferece um interface única de programação, desacoplada do \emph{back-end} de execução, permitindo que o usuário se preocupe apenas em implementar o \emph{kernel} estêncil que descreve a computação, enquanto o \fw fica responsável pela tradução das abstrações descritas para código paralelo de baixo nível em C++, gestão de memória e transferência de dados, tudo isso de forma transparente paar o usuário~\cite{pereira15}.
+
+
+\subsection{PSkel-MPPA}
+\label{subsec:pskel-mppa}
+
+A adaptação PSkel-MPPA, é uma adaptação do \pskel proposta por Podestá~\etal~\cite{PodestaJr.2017}, ela faz uso de uma \api similar à POSIX \ipc para comunicação, e será tratada como \ipc no decorrer deste relatório. Nela, são utilizados portais de comunicação para o envio de dados e o método de \textit{strides}  para gerenciar explicitamente o envio e recebimento de \textit{tiles}. Essa adaptação possíbilita o uso do \fw PSkel com o processador \emph{manycore} \mppa.
+
+\subsection{Trabalhos Relacionados}
+
+Devido a importância dos esqueletos paralelos, e especifcamente o padrão paralelo estêncil, muitos esforços de pesquisas recentes buscam melhorar o desempenho e o suporte desses esqueletos em processadores manycore. \emph{Buono}~\etal~\cite{buono13} portou um \fw baseado em esqueletos paralelos, chamado \emph{FastFlow}, para o processador \emph{manycore} TilePro64, que possui 64 núcleos de processamento idênticos, interconectados por uma malha de \noc. Similarmente, \emph{Thorarensen}~\etal~\cite{thoraransen16} apresentou um novo \emph{back-end} do \fw SkePU para o processador \emph{manycore} Myriad2. Que possui como característica uma arquitetura heterogenea, visando dispositivos com restrição de energia e principalmente aplicações de visão computacional. \emph{Gysi}~\etal~\cite{gysi15} propôs um \fw para otimização automática da repartição de computações estêncil em sistemas híbridos de \cpu e \gpu.
+
+Recentes trabalhos estudaram o desempenho e/ou a eficiência energética de processadores manycore de baixa potência. \emph{Totoni}~\etal~\cite{SCCEnergy:2012} comparou a potência e o desempenho do \emph{Intel's Single-Chip Cloud Computer} (SCC) com outros tipos de \emph{CPUs} e \emph{GPUs}. Porém, eles mostraram que não existe um solução única que entrega o melhor troca entre potência e performance, os resultados mostram que \emph{manycores} são uma oportunidade para o futuro. \emph{Souza}~\etal~\cite{Castro-Souza-CCPE:2016} propôs um conjunto de \emph{benchmarks} para avaliar o \mppa manycore processor. O \emph{benchmark} oferece diversas aplicações que utilizam padrões paralelos, tipos de trabalho, intensidade de comunicação e estratégias de carga de trabalho, adequado para uma ampla compreensão do desempenho e consumo de energia do \mppa e novos \emph{manycores} que estão por vir. \emph{Francesquini}~\etal~\cite{Castro-IA3-JPDC:2014} avaliou três diferentes classes de aplicação (consumo de CPU, consumo de memória e uma composição híbrida dos dois tipos anteriores) utilizando plataformas de alto paralelismo como o \mppa em uma plataforma NUMA de 24 nós e 192 núcleos. Eles mostraram que as arquiteturas \emph{manycore} podem ser competitivas, mesmo se a aplicação é irregular por natureza.
+
+De acordo com relevante conhecimento na área, o \pskelmppa é a primeira implementação completa de um \fw com uso de padrões paralelos no \mppa. A solução proposta livra os programadores da necessidade de lidar explicitamente com a gestão de comunicação e envio de dados pela \noc, assim como a preocupação de lidar com um ambiente híbrido de execução e a ausência de coerência de cache no \mppa.
+
+\section{Proposta e implementação de otimização no PSkel-MPPA}
+\label{sec:pskelMPPA}
+
+As otimizações propostas e implementação das mesmas continua aplicando o modelo mestre-trabalhador, que é um dos padrões de computação paralela que pode ser utilizado quando existem múltiplos núcleos de processamento. O processo mestre é executado no \emph{cluster} de \io conectado a memória LPDDR3, aonde os dados de entrada e saída (os \emph{Array2Ds}) são alocados, enquanto os processos dos trabalhadores são executados nos \emph{clusters} de computação (um processo trabalhador por \emph{cluster} de computação) para realizar a computação estêncil. Devido a memória limitada nos \emph{clusters} de computação (2MB), o tamanho do \emph{Array2D} é particionado em \emph{tiles} de tamanho fixo definido pelo usuário para serem enviados à eles. Quando se trata de particionamento de computação estêncil, é necessário tratar as depedências de vizinhança provenientes do padrão paralelo estêncil, antes de particionar os dados de entrada.
+
+
+\begin{figure}[htb]
+  \begin{minipage}[b]{0.40\textwidth}
+	\centering
+	\includegraphics[height=3.8cm]{figs/tile.pdf}
+	\caption{Técnica de \emph{tiling} 2D~\cite{Rocha:2017}.}
+	\label{fig:gputile}
+  \end{minipage}
+  \begin{minipage}[b]{0.60\textwidth}
+	\centering
+	\includegraphics[height=3.8cm]{figs/pskel-mppa-fluxogram.pdf}
+	\caption{Comunicações com \texttt{block2d}.}
+    \label{fig:block2d}
+  \end{minipage}
+\end{figure}
+
+O fluxo de execução do \pskelmppa ocorre da seguinte forma. Durante a fase de inicialização, o processo mestre que está executando no \emph{cluster} de \io aloca os dados de entrada e saída na \lpddr, e cria um segmento específico para cada uma deles. Em seguida, ele calcula o número de \emph{tiles} engordados que serão produzidos assim como suas dimensões baseado em: i) parametros definidos pelo usuário, como o tamanho da entrada de dados e as dimensões do \emph{tile} lógico, o número de \emph{clusters} de computação e o número de iterações internas; e ii) parâmetros do \emph{kernel} estêncil, como o tamanho da máscara. Então, são lançados até 16 processos trabalhadores (um em cada \emph{cluster} de computação) e é informado a cada processo trabalhador o número de \emph{tiles} engordados gerados, suas dimensões e o subconjunto de \emph{tiles} que cada \emph{cluster} será responsável por processar. Por fim, o processo mestre aguarda até que todos os trabalhadores terminem de computar.
+%
+Cada processo trabalhador, por outro lado, aloca dados para armazenar os \emph{tiles} engordados de entrada e de saída na memória local do \emph{cluster} de computação e clona ambos os segmentos de entrada e saída que foram criados pelo processo mestre para realizar futuras transferências de dados. A fase de inicialização tanto do mestre como do trabalhor está encapsulada na classe \texttt{Stencil2D}.
+%
+Essa primeira etapa do fluxo de execução diferencia-se da anteriormente presente no PSkelMPPA, pois agora esta comunicação é realizada uma única vez na inicialização, o que não ocorria anteriormente, já que exisitiam trocas de mensagens de sincronização a cada laço da computação iterativa.
+
+As etapas acima mencionadas estão retratadas na Figura~\ref{fig:block2d}, para sua implementação foi utilizada uma nova \api de comunicação asíncrona (ASYNC) disponível para o \mppa, que difere da \api anteriormente utilizada, a \ipc. Abaixo elas são descritas em mais detalhes:
+
+\begin{description}
+
+
+
+
+	\item[Etapa 3.] Após a computação do \emph{kernel} estêncil, o\emph{tile} lógico resultante é transferido de volta para a \lpddr. A função \texttt{mppa\_async\_sput\_block2d()} é usada para esse propósito, permitindo que o \emph{tile} lógico seja extraído do \emph{tile} engordado na memória local do \emph{cluster} de computação e seja transferido para sua posicão correspondente no segmento de saída remoto.
+
+\end{description}
+
+Felizmente, todas a complexas tarefas relacionas a técnica de \emph{tiling}, comunicação via \noc e adaptações discutidas nessa seção são transparentes para os desenvolvedores, tendo em vista que estão incluidas no \emph{back-end} do PSkelMPPA. Isso significa que aplicações desenvolvidas com o \fw PSkel podem executar perfeitamente no \mppa sem nenhuma alteração no seu código fonte.
+
+\section{Resultados}
+\label{sec:resultados}
+
+Esta seção apresenta os resultados obtidos com a solução proposta, comparando-a com a versão apresentada em~\cite{PodestaJr.2017}.
+Todas as métricas foram obtidas com auxílio de ferramentas disponíveis no \mppa.
+Os dados se referem a execução de uma única iteração das aplicações Fur, GoL e Jacobi.
+A aplicação \textbf{\textit{Fur}} realiza a simulação de padrões de pigmento sobre
+pelos de animais. A aplicação \textbf{\textit{GoL}} é um autômato celular que
+implementa o Jogo da Vida de Conway. Por fim, a aplicação
+\textbf{\textit{Jacobi}} implementa o método de Jacobi para a resolução de equações matriciais.
+
+A variabilidade dos valores obtidos foi extremamente pequena (desvio-padrão inferior à $1\%$), pois as \textit{threads} da aplicação são executadas de maneira ininterrupta no \mppa.
+
+\begin{figure}[t]
+	\centering
+	\subfigure[Escalabilidade.]{
+		\includegraphics[width=0.3\textwidth]{figs/MPPAPlotScalabilityAPI.pdf}
+		\label{fig:escalabilidade}
+	}
+%	\quad
+	\subfigure[\textit{Tiles} vs. tempo (Fur).]{
+		\includegraphics[width=0.242\textwidth]{figs/MPPAPlotAPIfurTimeTiles.pdf}
+		\label{fig:tiles}
+	}
+%	\quad
+	\subfigure[Tempo.]{
+		\includegraphics[width=0.19\textwidth]{figs/ComparisonTimeTiles1.pdf}
+		\label{fig:compara-tempo}
+	}
+%	\quad
+	\subfigure[Energia.]{
+		\includegraphics[width=0.19\textwidth]{figs/ComparisonEnergyTiles1.pdf}
+		\label{fig:compara-energia}
+	}
+    \caption{Escalabilidade (a) e impacto do tamanho dos \textit{tiles} (b) na versão ASYNC. Comparação do tempo (c) e consumo de energia (d) do ASYNC com a versão IPC.}
+    \label{fig:compara}
+\end{figure}
+
+\section{Conclusão}
+\label{sec:conclusao}
+
+
+
+\section{Avaliação PIBIC: Benefícios e Formação Científica}
+
+Participar deste projeto de pesquisa foi enriquecedor, uma experiência única que teve como peça chave a dedicação, cobrança e incentivo de meu orientador. Assim que comecei meu projeto de pesquisa tive o seu incentivo para participar do XVIII Simpósio de Sistemas Computacionais de Alto Desempenho (WSCAD) que foi realizado em conjunto com o \emph{International Symposium on Computer Architecture and High Performance Computing} (SBAC-PAD) na cidade de Campinas, São Paulo. Participei como um espectador e foi uma experiência nacional e internacional inesquecível, aonde conheci renomados cientistas e entusiastas do meio acadêmico, além de ser apresentado aos mais recentes projetos desenvolvidos na área. 
+
+Neste ano de pesquisa e desenvolvimento produzi um artigo científico que apresentei na 18ª Escola Regional de Alto Desempenho do Estado do Rio Grande do Sul (ERAD/RS 2018), que ocorreu na cidade de Porto Alegre, Rio Grande do Sul. Artigo este que culminou em uma significativa contribuição para um artigo aceito em um evento internacional prestigiado na área de programação paralela e distribuída, o \emph{24th International European Conference On Parallel and Distributed Computing} (Euro-Par 2018).
+
+O desenvolvimento deste projeto de iniciação científica gerou um arcabouço de conhecimento na área acadêmica de maneira vertiginosa, além de ampliar meus horizontes e esclarecer o que é de fato a área acadêmica e o seu papel fundamental no desenvolvimento tecnológico e intelectual da sociedade.
+ 
+\bibliography{bibliografia} 
+\bibliographystyle{sbc}
+
+\end{document}
