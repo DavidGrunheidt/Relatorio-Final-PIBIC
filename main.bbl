@@ -62,6 +62,14 @@ Gysi, T., Grosser, T., and Hoefler, T. (2015).
 \newblock In {\em International Conference on Supercomputing (ICS)}, pages
   177--186, Irvine, USA. ACM.
 
+\bibitem[Hasco{\"{e}}t et~al. 2017]{Hascoet2017}
+Hasco{\"{e}}t et~al. (2017).
+\newblock Asynchronous one-sided communications and synchronizations for a
+  clustered manycore processor.
+\newblock In {\em Proceedings of the 15th IEEE/ACM Symp. on Embedded Systems
+  for Real-Time Multimedia - ESTIMedia '17}, pages 51--60, New York, New York,
+  USA. ACM Press.
+
 \bibitem[Larus and Kozyrakis 2008]{Larus:2008:TM:1364782.1364800}
 Larus, J. and Kozyrakis, C. (2008).
 \newblock Transactional memory.
