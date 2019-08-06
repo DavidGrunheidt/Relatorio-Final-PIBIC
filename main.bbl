@@ -7,6 +7,14 @@ de~Dinechin et~al. (2013).
 \newblock In {\em International Conference on Computational Science (ICCS)},
   volume~18, pages 1654--1663, Barcelona, Spain. Elsevier.
 
+\bibitem[Francesquini et~al. 2014]{Castro-IA3-JPDC:2014}
+Francesquini, E., Castro, M., Penna, P.~H., Dupros, F., de~Freitas, H.~C.,
+  Navaux, P. O.~A., and M{\'{e}}haut, J.-F. (2014).
+\newblock {On the Energy Efficiency and Performance of Irregular Applications
+  on Multicore, NUMA and Manycore Platforms}.
+\newblock {\em Journal of Parallel and Distributed Computing (JPDC)},
+  76:32--48.
+
 \bibitem[Fu et~al. 2016]{sunway:2016}
 Fu, H. et~al. (2016).
 \newblock The sunway taihulight supercomputer: System and applications.
@@ -38,6 +46,13 @@ Penna et~al. (2018).
   noc-based manycores.
 \newblock In {\em 12th IEEE/ACM International Symposium on Networks-on-Chip},
   Torino, Italy.
+
+\bibitem[Podestá et~al. 2018]{Podesta2018}
+Podestá et~al. (2018).
+\newblock Energy efficient stencil computations on the low-power manycore
+  mppa-256 processor.
+\newblock In {\em international European Conference on Parallel and Distributed
+  Computing (Euro-Par)}, pages 642--655.
 
 \bibitem[Souza et~al. 2016]{Castro-Souza-CCPE:2016}
 Souza, M.~A. et~al. (2016).

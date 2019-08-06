@@ -29,6 +29,7 @@
 \newcommand{\capb}{CAP Bench\xspace}
 \newcommand{\epiphany}{Adapteva Epiphany\xspace}
 \newcommand{\manycore}{\textit{manycore}\xspace}
+\newcommand{\manycores}{\textit{manycores}\xspace}
 \newcommand{\bench}{\textit{benchmark}\xspace}
 
 \fancypagestyle{plain}{%
@@ -65,11 +66,11 @@ Similar ao que aconteceu com os processadores \textit{single-core}, ao longo de 
 
 Para que os supercomputadores atuais consigam alcançar de forma definitiva a computação em \textit{exaescale}, é necessário que haja, de forma coesa, alto desempenho e consumo energético viável. Porém, assim como ocorreu com os avanços nas tecnologias de processadores \textit{single-core}, os quais, nas ultimas três décadas, permitiram aumento no desempenho de um processador a uma taxa anual de 40\% a 50\%  \cite{Larus:2008:TM:1364782.1364800}, a dissipação de calor nos supercomputadores que utilizam processadores do tipo \textit{multicore} chegou a um ponto que não mais permitiu a escalabilidade proporcional das variáveis citadas acima.
  
-Seguindo os conceitos de \textit{Green Computing}, estudos foram realizados a fim de encontrar um \textit{trade-off} positivo entre desempenho e gasto energético, centrado na redução do consumo de energia. O grande interesse da comunidade cientifica de \hpc acerca deste tema foi um dos responsáveis por alavancar a produção dos processadores \manycore de baixa potência, tais quais, o \mppa \cite{MPPA-2:2013}, o SW26010, utilizado no supercomputador \textit{Sunway TaihuLight} \cite{sunway:2016} e o \epiphany  \cite{Olofsson2014}.
+Seguindo os conceitos de \textit{Green Computing}, estudos foram realizados a fim de encontrar um \textit{trade-off} positivo entre desempenho e gasto energético, centrado na redução do consumo de energia. O grande interesse da comunidade cientifica de \hpc acerca deste tema foi um dos responsáveis por alavancar a produção dos \manycores de baixa potência, tais quais, o \mppa \cite{MPPA-2:2013}, o SW26010, utilizado no supercomputador \textit{Sunway TaihuLight} \cite{sunway:2016} e o \epiphany  \cite{Olofsson2014}.
 
-Com proposito de validar as supostas qualidades do \mppa e prover meios de comparação com outros processadores do estado da arte, \textit{Souza} \etal implementaram o \capb \cite{Castro-Souza-CCPE:2016}, \textit{benchmark} que avalia ambos desempenho e gasto energético do processador, levando em conta diversos cenários. Em sua versão inicial, utilizava uma \api de comunicaçao sincrona entre processos, denominada \ipc \cite{MPPA-2:2013}. Esta antiga \api possui alguns lados negativos, como baixo nivel de abstração e realização de sincronizações implicitas, levando a queda de desempeneho.
+Com proposito de validar as supostas qualidades do \mppa e prover meios de comparação com outros processadores do estado da arte, \textit{Souza} \etal implementaram o \capb \cite{Castro-Souza-CCPE:2016}, \textit{benchmark} que avalia ambos desempenho e gasto energético do processador, levando em conta diversos cenários. Em sua versão inicial, utilizava uma \api de comunicação síncrona entre processos, denominada \ipc \cite{MPPA-2:2013}. Esta antiga \api possui alguns lados negativos, como baixo nível de abstração e realização de sincronizações implícitas, levando a queda de desempenho.
 
-Neste trabalho, a fim de implementar a otimização proposta, realizou-se o porte do \capb com a nova \api de comunicação assincrona entre processos da Kalray, a \async \cite{Hascoet2017}. Esta \api possui nivel de abstração superior a \ipc, além de diferir na implementação quanto ao modelo de lógica de memória. Assim, ela simplifica a elaboração de aplicações para o \mppa, além de ganhar em desempenho e reduzir o custo energético, devido a sua caracteristica assincrona.
+Neste trabalho, a fim de implementar a otimização proposta, realizou-se o porte do \capb com a nova \api de comunicação assíncrona entre processos da Kalray, a \async \cite{Hascoet2017}. Esta \api possui nível de abstração superior a \ipc, além de diferir na implementação quanto ao modelo de lógica de memória. Assim, ela simplifica a elaboração de aplicações para o \mppa, além de ganhar em desempenho e reduzir o custo energético, devido a sua característica assíncrona.
 
 
 
@@ -107,12 +108,12 @@ Esta seção apresenta a revisão bibliográfica sobre o processador \manycore \
 \subsection{MPPA-256}
 \label{subsec:mppa}
 
-O \mppa é um processador voltado para baixo consumo energético, o qual, desenvolvido pela empresa francesa Kalray, reflete o estado da arte dos processadores \manycore. A Figura \ref{fig:mppaOverview} mostra uma visão geral da arquitetura do processador, possuindo este 16 \ccs e 4 \textit{clusters} de \io. Os \textit{clusters} de \io realizam comunicações com dispositivos externos, tais quais, no caso do processador utilizado nesta pesquisa, memorias \lpddr de 2GB. Já os \ccs possuem as seguintes características: numero
+O \mppa é um processador voltado ao baixo consumo energético, o qual, desenvolvido pela empresa francesa Kalray, reflete o estado da arte dos processadores \manycore. A Figura \ref{fig:mppaOverview} mostra uma visão geral da arquitetura do processador, possuindo este 16 \ccs e 4 \textit{clusters} de \io. 	Os \textit{clusters} de \io realizam comunicações com dispositivos externos, tais quais, no caso da maquina utilizada nesta pesquisa, memorias \lpddr de 2GB. Já os \ccs possuem as seguintes características:
 \begin{itemize}
-	\item
-	\item
-	\item
-	\item
+	\item 16 núcleos de processamento, chamados de \pes, que executam, com frequência de 400 MHz, threads de usuário em modo ininterrupto e não preemptivo. Estes núcleos também possuem duas memórias \textit{cache}, uma para dados e outra para instruções. Ambas são associativas 2-\textit{way} privadas	e possuem 32kB \cite{Podesta2018}.
+	\item Gerenciador de recursos para gerenciar as comunicações de um determinado \textit{cluster} e executar o sistema operacional.
+	\item Memoria compartilhada de 2MB, possibilitando, entre núcleos de um mesmo \textit{cluster}, alta largura de banda e alta taxa de transferência.
+	\item Dois controladores, para dados e controle, da Rede-em-Chip (\noc) que conecta os \textit{clusters}.
 \end{itemize}
 
 \begin{figure}[h]
@@ -122,9 +123,12 @@ O \mppa é um processador voltado para baixo consumo energético, o qual, desenv
 \label{fig:mppaOverview}
 \end{figure}
 
+É importante salientar que ambos \ccs e \textit{clusters} de \io não podem acessar diretamente os dados armazenados na memoria interna de um outro \textit{cluster} que não ele mesmo. Logo, o processador possui um modelo de memória distribuído \cite{Castro-Souza-CCPE:2016, Podesta2018}. Esta característica, comum a alguns processadores \manycore, é fator desafiador para implementação de aplicações paralelas otimizadas no \mppa \cite{Castro-IA3-JPDC:2014}. 
 
 \subsection{\capb}
 \label{subsec:capb}
+
+O \capb é um \textit{benchmark} formado por 7 aplicações implementadas em C, diferindo na tecnologia de paralelismo utilizada dependendo da arquitetura alvo a ser testada. Atualmente, o \textit{benchmark} opera sobre arquiteturas x86, utilizando OpenMP e futuramente POSIX Threads. Também opera sobre o gem5 e o \mppa. O modulo voltado ao \mppa foi construído para testar todos os cenários de computação que o \mppa possa se deparar. Logo, as aplicações abrangem diversos problemas em diversos domínios, como grafos, ordenação e computação gráfica. Constituem o \capb os seguintes kernels: \textbf{(i)} Features from Accelerated Segment Test; \textbf{(ii)} Friendly Numbers; \textbf{(iii)} Gaussian Filter; \textbf{(iv)} Integer Sort; \textbf{(v)} K-Means; \textbf{(vi)} LU Factorization; e \textbf{(vii)} Traveling-Salesman Problem
 
 
 \subsection{Comunicação assincrona}
@@ -153,11 +157,11 @@ O \mppa é um processador voltado para baixo consumo energético, o qual, desenv
 
 \section{Avaliação PIBIC: Benefícios e Formação Científica}
 
-Este projeto de pesquisa contribuiu de inumeras formas para minha formação academica. Do começo ao fim foi algo engrandecedor e acredito que, ao longo da minha carreira profissional, irei utilizar diversos conhecimentos aqui adquiridos. Este foi o primeiro projeto no qual tive contato com uma documentação de \api, e, assim como nosso primeiro contato com qualquer tecnologia nova, foi bastante desafiador. Através de muita dedicação e ajuda do meu orientador e colegas de trabalho, consegui quebrar as barreiras do conhecimento e entender a fundo como funciona a nova \api da Kalray, a \async.  
+Este projeto de pesquisa contribuiu de inúmeras formas para minha formação acadêmica. Do começo ao fim foi algo engrandecedor e acredito que, ao longo da minha carreira profissional, irei utilizar diversos conhecimentos aqui adquiridos. Este foi o primeiro projeto no qual tive contato com uma documentação de \api, e, assim como nosso primeiro contato com qualquer tecnologia nova, foi bastante desafiador. Através de muita dedicação e ajuda do meu orientador e colegas de trabalho, consegui quebrar as barreiras do conhecimento e entender a fundo como funciona a nova \api da Kalray, a \async.  
 
-Neste ciclo de pesquisa também produzi um artigo científico, o qual foi aprovado na decima nona Escola Regional de Alto Desempenho da Região Sul (ERAD/RS 2019), ocorrida na cidade de Três de Maio, no Rio Grande do Sul. Com esta aprovação, fui apresenta-lo nesta mesma cidade na data de realização do evento. Participar deste evento foi também uma experiencia enriquecedora, pois pude conhecer projetos de diferentes niveis de complexidade, engloblando tanto projetos de iniciação ciêntifica quanto os do estado da arte.
+Neste ciclo de pesquisa também produzi um artigo científico, o qual foi aprovado na decima nona Escola Regional de Alto Desempenho da Região Sul (ERAD/RS 2019), ocorrida na cidade de Três de Maio, no Rio Grande do Sul. Com esta aprovação, fui apresenta-lo nesta mesma cidade na data de realização do evento. Participar deste evento foi também uma experiencia enriquecedora, pois pude conhecer projetos de diferentes níveis de complexidade, englobando tanto projetos de iniciação cientifica quanto os do estado da arte.
 
-Com este projeto de pesquisa pude também descobrir o que pretendo seguir na minha carreia profissional, assim como ter plena certeza de que de quero continuar com a pesquisa e contribuir de forma significativa para o avanço tecnologico de toda comunidade cientifica. Utiliarei também os resultados deste para realização do meu trabalho de conclusão de curso, onde pretendo expandir o que já foi pesquisado, realizando comparações com outros processadores do estado da arte.
+Com este projeto de pesquisa pude também descobrir o que pretendo seguir na minha carreia profissional, assim como ter plena certeza de que de quero continuar com a pesquisa e contribuir de forma significativa para o avanço tecnológico de toda comunidade cientifica. Utilizarei também os resultados deste para realização do meu trabalho de conclusão de curso, onde pretendo expandir o que já foi pesquisado, realizando comparações com outros processadores do estado da arte.
  
 \bibliography{bibliografia} 
 \bibliographystyle{sbc}
