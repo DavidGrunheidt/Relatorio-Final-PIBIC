@@ -1,11 +1,5 @@
 \begin{thebibliography}{}
 
-\bibitem[Buono et~al. 2013]{buono13}
-Buono, D., Danelutto, M., Lametti, S., and Torquati, M. (2013).
-\newblock Parallel patterns for general purpose many-core.
-\newblock In {\em 2013 21st Euromicro International Conference on Parallel,
-  Distributed, and Network-Based Processing}, pages 131--139.
-
 \bibitem[de~Dinechin et~al. 2013]{MPPA-2:2013}
 de~Dinechin et~al. (2013).
 \newblock {A Distributed Run-Time Environment for the Kalray MPPA-256
@@ -13,25 +7,10 @@ de~Dinechin et~al. (2013).
 \newblock In {\em International Conference on Computational Science (ICCS)},
   volume~18, pages 1654--1663, Barcelona, Spain. Elsevier.
 
-\bibitem[Francesquini et~al. 2014]{Castro-IA3-JPDC:2014}
-Francesquini, E., Castro, M., Penna, P.~H., Dupros, F., de~Freitas, H.~C.,
-  Navaux, P. O.~A., and M{\'{e}}haut, J.-F. (2014).
-\newblock {On the Energy Efficiency and Performance of Irregular Applications
-  on Multicore, NUMA and Manycore Platforms}.
-\newblock {\em Journal of Parallel and Distributed Computing (JPDC)},
-  76:32--48.
-
 \bibitem[Fu et~al. 2016]{sunway:2016}
 Fu, H. et~al. (2016).
 \newblock The sunway taihulight supercomputer: System and applications.
 \newblock {\em {SCIENCE} {CHINA} Information Sciences}, 59(7):1--16.
-
-\bibitem[Gysi et~al. 2015]{gysi15}
-Gysi, T., Grosser, T., and Hoefler, T. (2015).
-\newblock {MODESTO}: Data-centric analytic optimization of complex stencil
-  programs on heterogeneous architectures.
-\newblock In {\em International Conference on Supercomputing (ICS)}, pages
-  177--186, Irvine, USA. ACM.
 
 \bibitem[Hasco{\"{e}}t et~al. 2017]{Hascoet2017}
 Hasco{\"{e}}t et~al. (2017).
@@ -53,54 +32,17 @@ Olofsson et~al. (2014).
 \newblock In {\em Asilomar Conf. on Signals, Systems and Computers}, pages
   1719--1726. IEEE.
 
-\bibitem[Pereira et~al. 2015]{pereira15}
-Pereira, A.~D., Ramos, L., and G\'{o}es, L. F.~W. (2015).
-\newblock {PSkel}: A stencil programming framework for cpu-gpu systems.
-\newblock {\em Concurrency and Computation: Practice and Experience},
-  27(17):4938--4953.
-
-\bibitem[{Podest{\'{a}} Jr.} et~al. 2017a]{Castro-Podesta-ERAD:2017}
-{Podest{\'{a}} Jr.}, E., Pereira, A.~D., Rocha, R.~C., Castro, M., and
-  G{\'{o}}es, L. F.~W. (2017a).
-\newblock {Uma Implementa{\c{c}}{\~{a}}o do Framework PSkel com Suporte a
-  Aplica{\c{c}}{\~{o}}es Est{\^{e}}ncil Iterativas para o Processador
-  MPPA-256}.
-\newblock In {\em ERAD/RS}, pages 395--398, Iju{\'{i}}, Brazil. SBC.
-
-\bibitem[{Podest{\'{a}} Jr.} et~al. 2017b]{PodestaJr.2017}
-{Podest{\'{a}} Jr.}, E., Pereira, A.~D., Rocha, R. C. d.~O., Castro, M., and
-  G{\'{o}}es, L. F.~W. (2017b).
-\newblock {Execu{\c{c}}{\~{a}}o Energeticamente Eficiente de
-  Aplica{\c{c}}{\~{o}}es Est{\^{e}}ncil com o Processador Manycore MPPA-256}.
-\newblock In {\em Simp{\'{o}}sio em Sistemas Computacionais de Alto Desempenho
-  (WSCAD)}, Campinas, SP.
-
-\bibitem[Rocha et~al. 2017]{Rocha:2017}
-Rocha, R. C.~O., Pereira, A.~D., Ramos, L., and Góes, L. F.~W. (2017).
-\newblock {TOAST}: Automatic tiling for iterative stencil computations on
-  {GPU}s.
-\newblock {\em Concurrency and Computation: Practice and Experience},
-  29(8):1--13.
+\bibitem[Penna et~al. 2018]{Penna2018}
+Penna et~al. (2018).
+\newblock An operating system service for remote memory accesses in low-power
+  noc-based manycores.
+\newblock In {\em 12th IEEE/ACM International Symposium on Networks-on-Chip},
+  Torino, Italy.
 
 \bibitem[Souza et~al. 2016]{Castro-Souza-CCPE:2016}
 Souza, M.~A. et~al. (2016).
 \newblock {CAP} bench: A benchmark suite for performance and energy evaluation
   of low-power many-core processors.
 \newblock {\em Concurrency and Computation: Practice and Experience}.
-
-\bibitem[Thorarensen et~al. 2016]{thoraransen16}
-Thorarensen, S., Cuello, R., Kessler, C., Li, L., and Barry, B. (2016).
-\newblock Efficient execution of skepu skeleton programs on the low-power
-  multicore processor myriad2.
-\newblock In {\em Euromicro International Conference on Parallel, Distributed,
-  and Network-Based Processing (PDP)}, pages 398--402.
-
-\bibitem[Totoni et~al. 2012]{SCCEnergy:2012}
-Totoni, E., Behzad, B., Ghike, S., and Torrellas, J. (2012).
-\newblock Comparing the power and performance of intel's {SCC} to
-  state-of-the-art {CPUs} and {GPUs}.
-\newblock In {\em IEEE International Symposium on Performance Analysis of
-  Systems and Software (ISPASS)}, pages 78--87, New Brunswick, Canada. IEEE
-  Computer Society.
 
 \end{thebibliography}
