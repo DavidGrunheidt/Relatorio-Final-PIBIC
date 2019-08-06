@@ -65,7 +65,7 @@ Similar ao que aconteceu com os processadores \textit{single-core}, ao longo de 
 
 Para que os supercomputadores atuais consigam alcançar de forma definitiva a computação em \textit{exaescale}, é necessário que haja, de forma coesa, alto desempenho e consumo energético viável. Porém, assim como ocorreu com os avanços nas tecnologias de processadores \textit{single-core}, os quais, nas ultimas três décadas, permitiram aumento no desempenho de um processador a uma taxa anual de 40\% a 50\%  \cite{Larus:2008:TM:1364782.1364800}, a dissipação de calor nos supercomputadores que utilizam processadores do tipo \textit{multicore} chegou a um ponto que não mais permitiu a escalabilidade proporcional das variáveis citadas acima.
  
-Seguindo os conceitos de \textit{Green Computing}, estudos foram realizados a fim de encontrar um \textit{trade-off} positivo entre desempenho e gasto energético, centrado na redução do consumo de energia. O grande interesse da comunidade cientifica de \hpc acerca deste tema foi um dos responsáveis por alavancar a produção dos processadores \textit{manycore} de baixa potência, tais quais, o \mppa \cite{MPPA-2:2013}, o SW26010, utilizado no supercomputador \textit{Sunway TaihuLight} \cite{sunway:2016} e o \epiphany  \cite{Olofsson2014}.
+Seguindo os conceitos de \textit{Green Computing}, estudos foram realizados a fim de encontrar um \textit{trade-off} positivo entre desempenho e gasto energético, centrado na redução do consumo de energia. O grande interesse da comunidade cientifica de \hpc acerca deste tema foi um dos responsáveis por alavancar a produção dos processadores \manycore de baixa potência, tais quais, o \mppa \cite{MPPA-2:2013}, o SW26010, utilizado no supercomputador \textit{Sunway TaihuLight} \cite{sunway:2016} e o \epiphany  \cite{Olofsson2014}.
 
 Com proposito de validar as supostas qualidades do \mppa e prover meios de comparação com outros processadores do estado da arte, \textit{Souza} \etal implementaram o \capb \cite{Castro-Souza-CCPE:2016}, \textit{benchmark} que avalia ambos desempenho e gasto energético do processador, levando em conta diversos cenários. Em sua versão inicial, utilizava uma \api de comunicaçao sincrona entre processos, denominada \ipc \cite{MPPA-2:2013}. Esta antiga \api possui alguns lados negativos, como baixo nivel de abstração e realização de sincronizações implicitas, levando a queda de desempeneho.
 
@@ -102,24 +102,26 @@ Nas seções seguintes são apresentados o desenvolvimento e os resultados produ
 
 \section{Revisão Bibliográfica}
 
-Esta seção apresenta a revisão bibliográfica sobre o processador \textit{manycore} \mppa, o \textit{benchmark} \capb e a \api utilizada para realizar a otimização proposta. Por fim, são apresentados alguns trabalhos relacionados.
+Esta seção apresenta a revisão bibliográfica sobre o processador \manycore \mppa, o \textit{benchmark} \capb e a \api utilizada para realizar a otimização proposta. Por fim, são apresentados alguns trabalhos relacionados.
 
 \subsection{MPPA-256}
 \label{subsec:mppa}
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=7cm, keepaspectratio]{figs/mppa-overview.pdf}
-\caption{Visão arquitetural simplificada do \mppa \cite{Penna2018}.}\par
-\label{fig:mppa}
-\end{figure}
-
+O \mppa é um processador voltado para baixo consumo energético, o qual, desenvolvido pela empresa francesa Kalray, reflete o estado da arte dos processadores \manycore. A Figura \ref{fig:mppaOverview} mostra uma visão geral da arquitetura do processador, possuindo este 16 \ccs e 4 \textit{clusters} de \io. Os \textit{clusters} de \io realizam comunicações com dispositivos externos, tais quais, no caso do processador utilizado nesta pesquisa, memorias \lpddr de 2GB. Já os \ccs possuem as seguintes características: numero
 \begin{itemize}
 	\item
 	\item
 	\item
 	\item
 \end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=7cm, keepaspectratio]{figs/mppa-overview.pdf}
+\caption{Visão arquitetural simplificada do \mppa \cite{Penna2018}.}\par
+\label{fig:mppaOverview}
+\end{figure}
+
 
 \subsection{\capb}
 \label{subsec:capb}
@@ -132,7 +134,7 @@ Esta seção apresenta a revisão bibliográfica sobre o processador \textit{man
 \centering
 \includegraphics[width=7cm, keepaspectratio]{figs/putget.pdf}
 \caption{Etapas da utilização da \api \async.}\par
-\label{fig:mppa}
+\label{fig:asyncOverview}
 \end{figure}
 
 
