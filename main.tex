@@ -151,9 +151,24 @@ Recentemente, a Kalray disponibilizou uma nova \api para comunicação assincron
 \section{Proposta e implementação de otimização no \capb}
 \label{sec:capbMPPA}
 
-Para a realização da otimização proposta, foi implementado, em todas as aplicações, uma nova logica de comunicação entre \textit{clusters} de \io e \ccs, e entre \ccs, onde o uso da \async substituiu por completo o uso da antiga \ipc. Como a nova \api simula um modelo de memoria compartilhado em suas operações, trabalhar com ela torna a implementação consideravelmente mais fácil. Também são abrangidos, nesta nova lógica, diversas modificações sobre em qual tipo de \textit{cluster} é computado determinada operação de um \textit{kernel}, com objetivo de usufruir do poder de processamento dos \ccs, quando necessário, ou da memoria local dos \textit{clusters} de \io, onde inicializa-se o dado a ser trabalhado. Todas as alterações serão mostradas, detalhadamente para cada \textit{kernel} , nesta seção.
+Para a realização da otimização proposta, foi implementado, em todas as aplicações, uma nova logica de comunicação entre \textit{clusters} de \io e \ccs, e entre \ccs, onde o uso da \async substituiu por completo o uso da antiga \ipc. Como a nova \api simula um modelo de memoria compartilhado em suas operações, trabalhar com ela torna a implementação consideravelmente mais fácil. Também são abrangidos, nesta nova lógica, diversas modificações sobre em qual tipo de \textit{cluster} é computado determinada operação de um \textit{kernel}, com objetivo de usufruir do poder de processamento dos \ccs, quando necessário, ou da memoria local dos \textit{clusters} de \io, onde inicializa-se o dado a ser trabalhado. Todas as alterações serão mostradas, detalhadamente para cada \textit{kernel}, nesta seção.
 
-\subsection{Comunicação assincrona}
+\subsection{Friendly Numbers}
+\label{subsec:async}
+
+\subsection{LU Factorization}
+\label{subsec:async}
+
+\subsection{K-Means}
+\label{subsec:async}
+
+\subsection{Gaussian Filter}
+\label{subsec:async}
+
+\subsection{Features from Accelerated Segment Test}
+\label{subsec:async}
+
+\subsection{Integer Sort}
 \label{subsec:async}
 
 \section{Resultados}
