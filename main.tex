@@ -161,11 +161,12 @@ Primeiramente, foi alterado a implementação da função que calculava a soma d
 \subsection{Alterações no LU Factorization}
 \label{subsec:async}
 
-Funções que setavam um novo pivô sobre a linha da matriz sendo iterada em algum \cc , realizando buscas por toda matriz e subsequentes trocas de linhas e colunas, foram removidas, pois, para calcular a fatoração LU não são permitidas operações de trocas de linhas e colunas, já que, ao realizar tais operações, estaríamos fazendo uma decomposição PLU, onde P é uma matriz de permutação. Além disso, realizar tais operações resulta em uma matriz L não mais triangular inferior. Assim, sem as computações citadas acima, já é de se esperar ganho em desempenho enorme. Erros relacionados a passagem de tarefas dos \textit{clusters} de \io para os \ccs também foram arrumados, pois, na versão antiga, os blocos dentro da matriz eram passados aos \textit{slaves} desalinhados, gerando descontinuidade na informação e resultado final errôneo. Por fim, foi criado um segmento sobre a matriz, representada por um array unidimensional. 
+Funções que setavam um novo pivô sobre a linha da matriz sendo iterada em algum \cc , realizando buscas por toda matriz e subsequentes trocas de linhas e colunas, foram removidas, pois, para calcular a fatoração LU não são permitidas tais operações, já que, ao realiza-las, é feito a decomposição PLU da matriz original, onde P é uma matriz de permutação. Além disso, a matriz L resultante não mais seria triangular inferior. Assim, sem as computações citadas acima, já é de se esperar ganho em desempenho enorme. Erros relacionados a passagem de tarefas dos \textit{clusters} de \io para os \ccs também foram arrumados, pois, na versão antiga, os blocos dentro da matriz eram passados aos \textit{slaves} desalinhados, gerando descontinuidade na informação e resultado final errôneo.
 
 Para tirar proveito da \async neste \textit{kernel}, foi criado um segmento sobre a matriz original, representada por um array unidimensional. Porém, diferentemente do FN, ao iniciar os \textit{slaves}, só é informado a eles o tamanho da matriz a ser decomposta. Auxiliar ao segmento da matriz, foi criado um segmento para conter os \textit{offsets} que serão utilizados pelos \ccs, no segmento da matriz, em uma certa iteração. É sobre este segmento que, em diversos momentos, cada \cc retira a informação sobre qual intervalo de \textit{offsets}, no segmento da matriz, ele deve pegar o dado. Não foi preciso informar aos \textit{slaves}, em sua inicialização, qual é seu \textit{offset} no segmento de \textit{offsets} visto que podemos utilizar seu próprio \textit{id} para isto.
 \subsection{Alterações no K-Means}
 \label{subsec:async}
+
 
 \subsection{Alterações no Gaussian Filter}
 \label{subsec:async}
