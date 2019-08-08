@@ -123,12 +123,12 @@ O \mppa é um processador voltado ao baixo consumo energético, o qual, desenvol
 \label{fig:mppaOverview}
 \end{figure}
 
-É importante salientar que ambos \ccs e \textit{clusters} de \io não podem acessar diretamente os dados armazenados na memoria interna de um outro \textit{cluster} que não ele mesmo. Logo, o processador possui um modelo de memória distribuído \cite{Castro-Souza-CCPE:2016, Podesta2018}. Esta característica, comum a alguns processadores \manycore, é fator desafiador para implementação de aplicações paralelas otimizadas no \mppa \cite{Castro-IA3-JPDC:2014}. 
+É importante salientar que ambos \ccs e \textit{clusters} de \io não podem acessar diretamente os dados armazenados na memoria interna de um outro \textit{cluster} que não ele mesmo. Logo, o processador possui um modelo de memória distribuído \cite{Castro-Souza-CCPE:2016, Podesta2018}. Esta característica, comum a alguns processadores \manycore, é fator desafiador para implementação de aplicações paralelas otimizadas no \mppa \cite{Castro-IA3-JPDC:2014}. Também vale informar que, neste trabalho, \textit{clusters} de \io virão a ser chamados de \textit{master} e \ccs virão a ser chamados de \textit{slaves}.
 
 \subsection{\capb}
 \label{subsec:capb}
 
-O \capb é um \textit{benchmark} formado por 7 aplicações implementadas em C, diferindo na tecnologia de paralelismo utilizada dependendo da arquitetura alvo a ser testada. Atualmente, o \textit{benchmark} opera sobre arquiteturas x86, utilizando OpenMP e futuramente POSIX Threads. Também opera sobre o gem5 e o \mppa. O modulo voltado ao \mppa foi construído para testar todos os cenários de computação que o \mppa possa se deparar. Logo, as aplicações abrangem diversos problemas em diversos domínios, como grafos, ordenação e computação gráfica. Constituem o \capb os seguintes kernels: \textbf{(i)} Features from Accelerated Segment Test; \textbf{(ii)} Friendly Numbers; \textbf{(iii)} Gaussian Filter; \textbf{(iv)} Integer Sort; \textbf{(v)} K-Means; \textbf{(vi)} LU Factorization; e \textbf{(vii)} Traveling-Salesman Problem.
+O \capb é um \textit{benchmark} formado por 7 aplicações implementadas em C, diferindo na tecnologia de paralelismo utilizada dependendo da arquitetura alvo a ser testada. Atualmente, o \textit{benchmark} opera sobre arquiteturas x86, utilizando OpenMP e futuramente POSIX Threads. Também opera sobre o gem5 e o \mppa. O modulo voltado ao \mppa foi construído para testar todos os cenários de computação que este possa se deparar. Logo, as aplicações abrangem diversos problemas em diversos domínios, como grafos, ordenação e computação gráfica. Constituem o \capb os seguintes kernels: \textbf{(i)} Features from Accelerated Segment Test; \textbf{(ii)} Friendly Numbers; \textbf{(iii)} Gaussian Filter; \textbf{(iv)} Integer Sort; \textbf{(v)} K-Means; \textbf{(vi)} LU Factorization; e \textbf{(vii)} Traveling-Salesman Problem.
 
 Originalmente, as aplicações voltadas ao o \mppa foram desenvolvidas explorando a \api \ipc, da Kalray. Esta \api, baseada no padrão POSIX \ipc, lida com comunicações entre \ccs, e entre \ccs e \textit{clusters} de \es. Ao usar a \ipc, é preciso lidar com paralelismo explicito, onde o programador implementa o comportamento do paralelismo e cada unidade de trabalho é independente em termos de dados e computação \cite{Castro-Souza-CCPE:2016}
 
@@ -151,24 +151,29 @@ Recentemente, a Kalray disponibilizou uma nova \api para comunicação assincron
 \section{Proposta e implementação de otimização no \capb}
 \label{sec:capbMPPA}
 
-Para a realização da otimização proposta, foi implementado, em todas as aplicações, uma nova logica de comunicação entre \textit{clusters} de \io e \ccs, e entre \ccs, onde o uso da \async substituiu por completo o uso da antiga \ipc. Como a nova \api simula um modelo de memoria compartilhado em suas operações, trabalhar com ela torna a implementação consideravelmente mais fácil. Também são abrangidos, nesta nova lógica, diversas modificações sobre em qual tipo de \textit{cluster} é computado determinada operação de um \textit{kernel}, com objetivo de usufruir do poder de processamento dos \ccs, quando necessário, ou da memoria local dos \textit{clusters} de \io, onde inicializa-se o dado a ser trabalhado. Todas as alterações serão mostradas, detalhadamente para cada \textit{kernel}, nesta seção.
+Para a realização da otimização proposta, foi implementado, em todas as aplicações, uma nova logica de comunicação entre \textit{clusters} de \io e \ccs, e entre \ccs, onde o uso da \async substituiu por completo o uso da antiga \ipc. Como a nova \api simula um modelo de memoria compartilhado em suas operações, trabalhar com ela torna a tarefa de otimização consideravelmente mais fácil. Também são abrangidos, nesta nova lógica, diversas modificações sobre em qual tipo de \textit{cluster} é computado determinada operação de um \textit{kernel}, com objetivo de usufruir do poder de processamento dos \ccs, quando necessário, ou da memoria local dos \textit{clusters} de \io, onde inicializa-se o dado a ser trabalhado. Todas as alterações serão mostradas detalhadamente, para cada \textit{kernel}, nesta seção.
 
-\subsection{Friendly Numbers}
+\subsection{Alterações no Friendly Numbers}
 \label{subsec:async}
 
-\subsection{LU Factorization}
+Primeiramente, foi alterado a implementação da função que calculava a soma de todos os divisores de um certo inteiro. Em sua versão antiga, esta função realizava a busca dos divisores no intervalo entre 2 e aquele inteiro. Já na otimizada, a busca é feita entre 2 e a metade deste inteiro, pois, acima da metade, sabemos que só existe ele como divisor de si mesmo. Quanto a utilização da \async, foi criado um segmento sobre a \textit{struct} de itens a serem passados dos \textit{clusters} de \io para os \ccs, onde cada \cc possui um intervalo de \textit{offsets} no qual pode realizar operações sobre este segmento. Este intervalo é definido, em tempo de execução, no processo mestre no \textit{cluster} de \io, o qual repassa estas informações aos \textit{slaves} no momento que os inicializa.
+
+\subsection{Alterações no LU Factorization}
 \label{subsec:async}
 
-\subsection{K-Means}
+Funções que setavam um novo pivô sobre a linha da matriz sendo iterada em algum \cc , realizando buscas por toda matriz e subsequentes trocas de linhas e colunas, foram removidas, pois, para calcular a fatoração LU não são permitidas operações de trocas de linhas e colunas, já que, ao realizar tais operações, estaríamos fazendo uma decomposição PLU, onde P é uma matriz de permutação. Além disso, realizar tais operações resulta em uma matriz L não mais triangular inferior. Assim, sem as computações citadas acima, já é de se esperar ganho em desempenho enorme. Erros relacionados a passagem de tarefas dos \textit{clusters} de \io para os \ccs também foram arrumados, pois, na versão antiga, os blocos dentro da matriz eram passados aos \textit{slaves} desalinhados, gerando descontinuidade na informação e resultado final errôneo. Por fim, foi criado um segmento sobre a matriz, representada por um array unidimensional. 
+
+Para tirar proveito da \async neste \textit{kernel}, foi criado um segmento sobre a matriz original, representada por um array unidimensional. Porém, diferentemente do FN, ao iniciar os \textit{slaves}, só é informado a eles o tamanho da matriz a ser decomposta. Auxiliar ao segmento da matriz, foi criado um segmento para conter os \textit{offsets} que serão utilizados pelos \ccs, no segmento da matriz, em uma certa iteração. É sobre este segmento que, em diversos momentos, cada \cc retira a informação sobre qual intervalo de \textit{offsets}, no segmento da matriz, ele deve pegar o dado. Não foi preciso informar aos \textit{slaves}, em sua inicialização, qual é seu \textit{offset} no segmento de \textit{offsets} visto que podemos utilizar seu próprio \textit{id} para isto.
+\subsection{Alterações no K-Means}
 \label{subsec:async}
 
-\subsection{Gaussian Filter}
+\subsection{Alterações no Gaussian Filter}
 \label{subsec:async}
 
-\subsection{Features from Accelerated Segment Test}
+\subsection{Alterações no Features from Accelerated Segment Test}
 \label{subsec:async}
 
-\subsection{Integer Sort}
+\subsection{Alterações no Integer Sort}
 \label{subsec:async}
 
 \section{Resultados}

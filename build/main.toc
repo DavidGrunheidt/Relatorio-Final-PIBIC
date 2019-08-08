@@ -8,12 +8,6 @@
 \contentsline {subsection}{\numberline {2.3}Comunica\IeC {\c c}\IeC {\~a}o assincrona}{}{subsection.2.3}% 
 \contentsline {subsection}{\numberline {2.4}Trabalhos Relacionados}{}{subsection.2.4}% 
 \contentsline {section}{\numberline {3}Proposta e implementa\IeC {\c c}\IeC {\~a}o de otimiza\IeC {\c c}\IeC {\~a}o no CAP Bench\xspace }{}{section.3}% 
-\contentsline {subsection}{\numberline {3.1}Altera\IeC {\c c}\IeC {\~o}es no Friendly Numbers}{}{subsection.3.1}% 
-\contentsline {subsection}{\numberline {3.2}Altera\IeC {\c c}\IeC {\~o}es no LU Factorization}{}{subsection.3.2}% 
-\contentsline {subsection}{\numberline {3.3}Altera\IeC {\c c}\IeC {\~o}es no K-Means}{}{subsection.3.3}% 
-\contentsline {subsection}{\numberline {3.4}Altera\IeC {\c c}\IeC {\~o}es no Gaussian Filter}{}{subsection.3.4}% 
-\contentsline {subsection}{\numberline {3.5}Altera\IeC {\c c}\IeC {\~o}es no Features from Accelerated Segment Test}{}{subsection.3.5}% 
-\contentsline {subsection}{\numberline {3.6}Altera\IeC {\c c}\IeC {\~o}es no Integer Sort}{}{subsection.3.6}% 
 \contentsline {section}{\numberline {4}Resultados}{}{section.4}% 
 \contentsline {section}{\numberline {5}Conclus\IeC {\~a}o}{}{section.5}% 
 \contentsline {section}{\numberline {6}Avalia\IeC {\c c}\IeC {\~a}o PIBIC: Benef\IeC {\'\i }cios e Forma\IeC {\c c}\IeC {\~a}o Cient\IeC {\'\i }fica}{}{section.6}% 
