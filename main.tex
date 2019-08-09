@@ -133,7 +133,7 @@ O \capb é um \textit{benchmark} formado por 7 aplicações implementadas em C, 
 Originalmente, as aplicações voltadas ao o \mppa foram desenvolvidas explorando a \api \ipc, da Kalray. Esta \api, baseada no padrão POSIX \ipc, lida com comunicações entre \ccs, e entre \ccs e \textit{clusters} de \es. Ao usar a \ipc, é preciso lidar com paralelismo explicito, onde o programador implementa o comportamento do paralelismo e cada unidade de trabalho é independente em termos de dados e computação \cite{Castro-Souza-CCPE:2016}
 
 
-\subsection{Comunicação assíncrona utilizando a \api \async}
+\subsection{Comunicação assíncrona no \mppa}
 \label{subsec:async}
 
 Recentemente, a Kalray disponibilizou uma nova \api para comunicação assíncrona e unilateral entre os \textit{clusters} do \mppa, a \async. Esta nova \api abstrai o modelo de memoria distribuído do \mppa e simula um contexto de memoria compartilhada. Desta maneia, é possível, em um determinado \textit{cluster}, realizar operações assíncronas diretamente sobre os espaços de memória de outros \textit{clusters}.Para tornar esta descrição verdade, a \api conta com diversas funcionalidades.

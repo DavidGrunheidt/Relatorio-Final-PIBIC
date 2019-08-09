@@ -5,7 +5,7 @@
 \contentsline {section}{\numberline {2}Revis\IeC {\~a}o Bibliogr\IeC {\'a}fica}{}{section.2}% 
 \contentsline {subsection}{\numberline {2.1}MPPA-256}{}{subsection.2.1}% 
 \contentsline {subsection}{\numberline {2.2}CAP Bench\xspace }{}{subsection.2.2}% 
-\contentsline {subsection}{\numberline {2.3}Comunica\IeC {\c c}\IeC {\~a}o ass\IeC {\'\i }ncrona utilizando a \gls {api}\xspace \gls {ASYNC}\xspace }{}{subsection.2.3}% 
+\contentsline {subsection}{\numberline {2.3}Comunica\IeC {\c c}\IeC {\~a}o ass\IeC {\'\i }ncrona no MPPA-256\xspace }{}{subsection.2.3}% 
 \contentsline {subsection}{\numberline {2.4}Trabalhos Relacionados}{}{subsection.2.4}% 
 \contentsline {section}{\numberline {3}Proposta e implementa\IeC {\c c}\IeC {\~a}o de otimiza\IeC {\c c}\IeC {\~a}o no CAP Bench\xspace }{}{section.3}% 
 \contentsline {subsection}{\numberline {3.1}Altera\IeC {\c c}\IeC {\~o}es no Friendly Numbers}{}{subsection.3.1}% 
