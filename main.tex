@@ -118,7 +118,7 @@ O \mppa é um processador voltado ao baixo consumo energético, o qual, desenvol
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=7cm, keepaspectratio]{figs/mppa-overview.pdf}
+\includegraphics[width=9cm, keepaspectratio]{figs/mppa-overview.pdf}
 \caption{Visão arquitetural simplificada do \mppa \cite{Penna2018}.}\par
 \label{fig:mppaOverview}
 \end{figure}
@@ -133,18 +133,19 @@ O \capb é um \textit{benchmark} formado por 7 aplicações implementadas em C, 
 Originalmente, as aplicações voltadas ao o \mppa foram desenvolvidas explorando a \api \ipc, da Kalray. Esta \api, baseada no padrão POSIX \ipc, lida com comunicações entre \ccs, e entre \ccs e \textit{clusters} de \es. Ao usar a \ipc, é preciso lidar com paralelismo explicito, onde o programador implementa o comportamento do paralelismo e cada unidade de trabalho é independente em termos de dados e computação \cite{Castro-Souza-CCPE:2016}
 
 
-\subsection{Comunicação assincrona}
+\subsection{Comunicação assíncrona utilizando a \api \async}
 \label{subsec:async}
 
-Recentemente, a Kalray disponibilizou uma nova \api para comunicação assincrona e unilateral entre os \textit{clusters} do \mppa, a \async. Esta nova \api,
+Recentemente, a Kalray disponibilizou uma nova \api para comunicação assíncrona e unilateral entre os \textit{clusters} do \mppa, a \async. Esta nova \api abstrai o modelo de memoria distribuído do \mppa e simula um contexto de memoria compartilhada. Desta maneia, é possível, em um determinado \textit{cluster}, realizar operações assíncronas diretamente sobre os espaços de memória de outros \textit{clusters}.Para tornar esta descrição verdade, a \api conta com diversas funcionalidades.
+
+Em primeiro lugar, é preciso definir um segmento sobre uma porção de memoria contiguá de um \textit{cluster}. Outros \textit{clusters} podem então clonar este segmento, utilizando o \textit{id} próprio e único deste, o qual foi definido na sua criação. Após a clonagem, operações do tipo \texttt{put} e \texttt{get} podem ser realizadas sobre aquele segmento. A operação \textit{get} copia um intervalo de dados, dentro do segmento, para dentro da memoria local de um \textit{cluster}. Já a operação \texttt{put} envia um dado da memoria local do \textit{cluster} para um intervalo de memoria contido no segmento. Também existem inúmeras operações variantes das \texttt{put}/\texttt{get}, por exemplo, funções que trabalham com intervalos espaçados dentro de um segmento, intervalos de blocos 2D e até 3D, entre outras.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=7cm, keepaspectratio]{figs/putget.pdf}
+\includegraphics[width=9cm, keepaspectratio]{figs/putget.pdf}
 \caption{Etapas da utilização da \api \async.}\par
 \label{fig:asyncOverview}
 \end{figure}
-
 
 \subsection{Trabalhos Relacionados}
 

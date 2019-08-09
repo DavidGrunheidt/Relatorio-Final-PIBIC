@@ -4,7 +4,7 @@
 \BOOKMARK [1][-]{section.2}{Revis\343o Bibliogr\341fica}{}% 4
 \BOOKMARK [2][-]{subsection.2.1}{MPPA-256}{section.2}% 5
 \BOOKMARK [2][-]{subsection.2.2}{CAP Bench}{section.2}% 6
-\BOOKMARK [2][-]{subsection.2.3}{Comunica\347\343o assincrona}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.3}{Comunica\347\343o ass\355ncrona utilizando a apiASYNC}{section.2}% 7
 \BOOKMARK [2][-]{subsection.2.4}{Trabalhos Relacionados}{section.2}% 8
 \BOOKMARK [1][-]{section.3}{Proposta e implementa\347\343o de otimiza\347\343o no CAP Bench}{}% 9
 \BOOKMARK [2][-]{subsection.3.1}{Altera\347\365es no Friendly Numbers}{section.3}% 10

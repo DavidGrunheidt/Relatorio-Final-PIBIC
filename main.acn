@@ -1,5 +1,7 @@
 \glossaryentry{HPC?\glossentry{hpc}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{CC?\glossentry{cc}|setentrycounter[]{page}\glsnumberformat}{}
+\glossaryentry{API?\glossentry{api}|setentrycounter[]{page}\glsnumberformat}{}
+\glossaryentry{ASYNC?\glossentry{ASYNC}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{HPC?\glossentry{hpc}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{API?\glossentry{api}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{IPC?\glossentry{ipc}|setentrycounter[]{page}\glsnumberformat}{}
@@ -33,6 +35,9 @@
 \glossaryentry{IPC?\glossentry{ipc}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{API?\glossentry{api}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{ASYNC?\glossentry{ASYNC}|setentrycounter[]{page}\glsnumberformat}{}
+\glossaryentry{API?\glossentry{api}|setentrycounter[]{page}\glsnumberformat}{}
+\glossaryentry{ASYNC?\glossentry{ASYNC}|setentrycounter[]{page}\glsnumberformat}{}
+\glossaryentry{API?\glossentry{api}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{API?\glossentry{api}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{API?\glossentry{api}|setentrycounter[]{page}\glsnumberformat}{}
 \glossaryentry{ASYNC?\glossentry{ASYNC}|setentrycounter[]{page}\glsnumberformat}{}
