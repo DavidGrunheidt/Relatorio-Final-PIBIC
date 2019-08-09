@@ -173,6 +173,8 @@ Para recalcular os \textit{centroids}, na antiga versão, toda a computação de
 \subsection{Alterações no Gaussian Filter}
 \label{subsec:async}
 
+Nesta nova versão, criamos dois segmentos: um sobre o \textit{array} que guarda a mascara a ser aplicada na imagem e outro sobre um \textit{array} que guarda o \textit{chunk}, ou pedaço da imagem, a ser trabalhado em determinada iteração. Sobre o segmento da mascara, todos os \ccs tem acesso completo a ele e pegam todo o dado que ele contem, ou seja, toda a mascara. Da mesma maneira, todo o segmento do \textit{chunk} pode ser acessado por todos os \ccs, porém, só há um acesso por \cc por vez. O método de comunicação dos dados no segmento de \textit{chunk} é feito em duas etapas. Na primeira, o \textit{cluster} de \io realiza somente escrita, definindo as tarefas, e os \ccs realizam somente leitura, sinalizando ao \textit{master}, após armazenar o dado daquele segmento em uma variável local, que estes podem prosseguir com a inserção do próximo \textit{chunk} para o próximo \cc. Na segunda, após já terem feito toda computação sobre aquele \textit{chunk}, os \textit{slaves} aguardam o \textit{master} sinalizar que está na hora de escrever o dado calculado sobre o segmento, e, quando sinalizados, escrevem-no. Já o \textit{master}, aguarda cada \cc sinalizar que tal dado já foi escrito no segmento. Este método é ligeiramente melhor que o anterior, pois só é preciso realizar operações \textit{GET} e \textit{PUT} no lado dos \textit{slaves}, já que, no lado do \textit{master}, só é necessário fazer um copia de memoria para o endereço onde o segmento foi criado, o qual encontra-se na memoria local.
+
 \subsection{Alterações no Features from Accelerated Segment Test}
 \label{subsec:async}
 
