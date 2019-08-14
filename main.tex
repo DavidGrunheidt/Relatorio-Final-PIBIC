@@ -179,10 +179,32 @@ Nesta ultima otimização, foi criado um segmento sobre todos os \textit{minibuc
 \section{Resultados}
 \label{sec:resultados}
 
+Para coletar os resultados de desempenho das novas versões das aplicações, cada aplicação foi executada com a classe de problema \textit{default}, variando-se o número de \textit{clusters} no intervalo de 1 a 16. No \capb temos diversas classes de problemas, cada qual variando seu tamanho de entrada, podendo assim testar diferentes propriedades do \mppa. Cada variação foi repetida 10 vezes, obtendo-se o resultado final pela média das repetições, o qual observou-se desvio padrão menor que 1\%. Ademais, os resultados foram comparados com os obtidos por \textit{Souza} \etal \cite{Castro-Souza-CCPE:2016}. No geral, observa-se ganho em desempenho e, na média, redução de gasto energético também. 
+
+O tempo de execução maior na versão antiga da FN, com uma pequena quantidade de \textit{clusters}, é esperado, já que toda logica de comparação foi movida para os \ccs, utilizando assim mais núcleo, aumentando o número de comunicações e sincronizações entre \ccs (o que é parte da lógica). Da mesma maneira, como mais núcleos estão em execução, há aumento no consumo de energia. Porém, ao aumentar-se o número de \ccs, temos ganho em desempenho. 
+
+Também justifica-se o tempo e gasto energético maior nas aplicações GF e FAST. Os tempos mostrados nos gráficos consideram o tempo total de execução da aplicação (na nova versão excluímos o tempo de \textit{spawn} dos \textit{slaves}). Porém, as versões do \mppa em que cada versão do \capb rodou, antiga e nova, são diferentes, possuindo peculiaridades próprias que afetam no tempo de execução, quando este aproxima-se de 0, onde tais peculiaridades não são medidas diretamente dentro do \capb. Estas peculiaridades não tem relação com a \async e podem criar um viés de que o resultado piorou, quando isto não é verdade
+
+Ambas as aplicações, FAST e GF, estão com a mesma lógica, pois utilizam o \textit{master} somente para definição de tarefas e os \textit{slaves} para os cálculos. Assim, ao analisar os tempos médios de computação dos \textit{slaves} e de comunicação, vemos uma redução em todas as variações de execução, como por exemplo, na variação de execução com a classe \textit{default} utilizando 16 \textit{clusters}, onde o tempo médio dos \ccs foi de 0.8 segundos para a versão antiga, tomando 1.7 segundos de comunicação, enquanto que na nova, o tempo médio foi de 0.36 segundos, utilizando 1.08 segundos de comunicação. Da mesma maneira, como o gasto energético considera todo o tempo de execução, ou seja, o total citado acima, este também ficou maior para as aplicações GF, FAST e KM.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=15cm, keepaspectratio]{figs/execution-time.pdf}
+\caption{Tempos de execução de cada aplicação, variando-se o número de \textit{clusters} para a classe \textit{default}.}\par
+\label{fig:executiontime}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=15cm, keepaspectratio]{figs/power.pdf}
+\caption{Gasto energético cada aplicação, variando-se o número de \textit{clusters} para a classe \textit{default}.}\par
+\label{fig:executiontime}
+\end{figure}
+
 \section{Conclusão}
 \label{sec:conclusao}
 
-
+Neste trabalho, foram propostas otimizações para as aplicaçõe do \capb no \mppa, a fim de reduzir gasto energético e tempo de execução. Os resultados mostraram que houve esta redução para algumas das aplicações, através do uso da \async, mas para outras, considerando o tempo total, não. Como trabalhos futuros, pretende-se estudar a fundo as peculiaridades que afetam o tempo total, citadas na seção de resultados, a fim de poder medi-las e exclui-las do tempo total, quando necessário, para realizar uma comparação mais justa, focando nas \apis \async e \ipc. Além disso, pretende-se atualizar a implementação do \capb com a \api \ipc, de modo a torna-la equivalente a implementação utilizando a \async, podendo assim realizar uma comparação totalmente voltada para as \apis de comunicação.
 
 \section{Avaliação PIBIC: Benefícios e Formação Científica}
 
