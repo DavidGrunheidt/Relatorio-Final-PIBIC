@@ -72,6 +72,21 @@ Com propósito de validar as supostas qualidades do \mppa e prover meios de comp
 
 Neste trabalho, a fim de implementar a otimização proposta, realizou-se o porte do \capb com a nova \api de comunicação assíncrona entre processos da Kalray, a \async \cite{Hascoet2017}. Esta \api possui nível de abstração superior a \ipc, além de diferir na implementação quanto ao modelo de lógica de memória. Assim, ela simplifica a elaboração de aplicações para o \mppa, além de ganhar em desempenho e reduzir o custo energético, devido a sua característica assíncrona.
 
+\subsection{Justificativa}
+
+É verdade que os processadores \manycore de baixo consumo oferecem melhor eficiência energética do que os processadores \textit{multi-core} de propósitos gerais. Todavia, estes processadores possuem algumas peculiaridades, as quais dificultam a implementação de aplicações cientificas eficientes \cite{Castro:2013:ACE:2535753.2535757}. Pode-se citar, como parte destas limitações, as memorias \textit{cache} de pequeno tamanho, ou a exigência de conformidade com a topologia \textit{NoC}. De forma a tomar máximo proveito destes processadores, é preciso avaliar três diferentes níveis: 
+
+\begin{enumerate}
+
+	\item \textbf{Nível aplicativo.} Sabe-se que a grande maioria de aplicações cientificas existentes são paralelizadas utilizando-se modelos de programação com memoria compartilhada, por exemplo, \textit{POSIX threads} e \textit{OpenMP}, e modelos com memoria distribuída, por exemplo, \textit{MPI}. Do outro lado, processadores como o \mppa necessitam que utilize-se ambos modelos de memoria. O problema então passa em portar as aplicações cientificas com este modelo hibrido.
+		
+	\item \textbf{Nível intermediário.} A grande concentração de núcleos no mesmo chip exige que os programas paralelos explorem de maneira eficaz os recursos computacionais. Para que isso seja possível, mostra-se necessária a utilização de algoritmos de escalonamento e balanceamento de carga inteligentes capazes de se adaptarem a carga de trabalho das aplicações paralelas, permitindo assim uma melhor distribuição das tarefas a serem computadas
+nos núcleos de processamento \cite{penna:hal-01239916}. Desta maneira, é preciso implementar estes algoritmos neste nível (ou seja, no ambiente de execução (\textit{runtime}), tornando o uso destes transparente para as aplicações.
+
+	\item \textbf{Nível de \emph{hardware}.} A comunicação entre \textit{clusters} é feita sobre as \textit{NoCs}, as quais se baseiam nos conceitos utilizados nas redes de interconexão para computadores paralelos \cite{4586199}. Apesar de que as \textit{NoCs} permitem grande escalabilidade em arquiteturas do tipo \manycore, também adicionam um certo custo ao sistema, devido ao trafego de dados pela rede. Logo, ambas estratégia de paralelização e ambiente de execução devem, sempre que possível, evitar que os processos em execução em \textit{cores} ou \textit{clusters} muito distantes se comuniquem frequentemente, removendo assim a possibilidade de gargalos de comunicação devido ao aumento do tempo de comunicação ou perdas de pacotes \cite{5452474, 6112995}.
+	
+\end{enumerate}
+
 \subsection{Objetivos}
 
 O objetivo desta pesquisa de iniciação científica é propor e implementar a otimização do \bench \capb para o processador \manycore de baixo consumo energético \mppa. Os objetivos específicos deste projeto de pesquisa estão elencados abaixo:

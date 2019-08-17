@@ -1,11 +1,34 @@
 \begin{thebibliography}{}
 
+\bibitem[Avelar et~al. 2011]{6112995}
+Avelar, C.~P., Oliveira, P. A.~C., Freitas, H.~C., and Navaux, P. O.~A. (2011).
+\newblock Evaluating the problem of process mapping on network-on-chip for
+  parallel applications.
+\newblock In {\em 2011 Second Workshop on Architecture and Multi-Core
+  Applications (wamca 2011)}, pages 18--23.
+
+\bibitem[Castro et~al. 2013]{Castro:2013:ACE:2535753.2535757}
+Castro, M., Francesquini, E., Ngu{\'e}l{\'e}, T.~M., and M{\'e}haut, J.-F.
+  (2013).
+\newblock Analysis of computing and energy performance of multicore, numa, and
+  manycore platforms for an irregular application.
+\newblock In {\em Proceedings of the 3rd Workshop on Irregular Applications:
+  Architectures and Algorithms}, IA3 '13, pages 5:1--5:8, New York, NY, USA.
+  ACM.
+
 \bibitem[de~Dinechin et~al. 2013]{MPPA-2:2013}
 de~Dinechin et~al. (2013).
 \newblock {A Distributed Run-Time Environment for the Kalray MPPA-256
   Integrated Manycore Processor}.
 \newblock In {\em International Conference on Computational Science (ICCS)},
   volume~18, pages 1654--1663, Barcelona, Spain. Elsevier.
+
+\bibitem[de~Freitas et~al. 2010]{5452474}
+de~Freitas, H.~C., Schnorr, L.~M., Alves, M. A.~Z., and Navaux, P. O.~A.
+  (2010).
+\newblock Impact of parallel workloads on noc architecture design.
+\newblock In {\em 2010 18th Euromicro Conference on Parallel, Distributed and
+  Network-based Processing}, pages 551--555.
 
 \bibitem[Francesquini et~al. 2014]{Castro-IA3-JPDC:2014}
 Francesquini, E., Castro, M., Penna, P.~H., Dupros, F., de~Freitas, H.~C.,
@@ -14,6 +37,12 @@ Francesquini, E., Castro, M., Penna, P.~H., Dupros, F., de~Freitas, H.~C.,
   on Multicore, NUMA and Manycore Platforms}.
 \newblock {\em Journal of Parallel and Distributed Computing (JPDC)},
   76:32--48.
+
+\bibitem[Freitas et~al. 2008]{4586199}
+Freitas, H.~C., Santos, T. G.~S., and Navaux, P. O.~A. (2008).
+\newblock Design of programmable noc router architecture on fpga for
+  multi-cluster nocs.
+\newblock {\em Electronics Letters}, 44(16):969--971.
 
 \bibitem[Fu et~al. 2016]{sunway:2016}
 Fu, H. et~al. (2016).
@@ -46,6 +75,14 @@ Penna et~al. (2018).
   noc-based manycores.
 \newblock In {\em 12th IEEE/ACM International Symposium on Networks-on-Chip},
   Torino, Italy.
+
+\bibitem[Penna et~al. 2015]{penna:hal-01239916}
+Penna, P.~H., Castro, M., Freitas, H.~C., Broquedis, F., and M{\'e}haut, J.-F.
+  (2015).
+\newblock {Uma Metodologia Baseada em Simula{\c c}ão e Algoritmo Gen{\'e}tico
+  para Explora{\c c}ão de Estrat{\'e}gias de Escalonamento de La{\c c}os}.
+\newblock In {\em { WSCAD 2015 - Simp{\'o}sio em Sistemas Computacionais de
+  Alto Desempenho}}, Florian{\'o}polis, Brazil. {SBC}.
 
 \bibitem[Podestá et~al. 2018]{Podesta2018}
 Podestá et~al. (2018).
