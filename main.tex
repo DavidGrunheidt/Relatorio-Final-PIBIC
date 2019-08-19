@@ -140,7 +140,7 @@ Originalmente, as aplicações voltadas ao \mppa foram desenvolvidas explorando 
 
 Recentemente, a Kalray disponibilizou uma nova \api para comunicação assíncrona e unilateral entre os \textit{clusters} do \mppa, a \async. Esta nova \api abstrai o modelo de memória distribuído do \mppa e simula um contexto de memória compartilhada. Desta maneia, é possível, em um determinado \textit{cluster}, realizar operações assíncronas diretamente sobre os espaços de memória de outros \textit{clusters}. Para isso, a \api conta com diversas funcionalidades.
 
-Em primeiro lugar, é preciso definir um segmento sobre uma porção de memória contígua de um \textit{cluster}. Outros \textit{clusters} podem então clonar este segmento, utilizando o \textit{id} próprio e único deste, o qual foi definido na sua criação. Após a clonagem, operações do tipo \texttt{put} e \texttt{get} podem ser realizadas sobre aquele segmento. A operação \texttt{get} copia um intervalo de dados, dentro do segmento, para dentro da memória local de um \textit{cluster}. Já a operação \texttt{put} envia um dado da memória local do \textit{cluster} para um intervalo de memória contido no segmento. Também existem inúmeras operações variantes das \texttt{put}/\texttt{get}, por exemplo, funções que trabalham com intervalos espaçados dentro de um segmento, intervalos de blocos 2D e até 3D, entre outras. A Figura 2 exemplifica, para melhor visualização, as etapas de iteração com a \api \async citadas acima.
+Em primeiro lugar, é preciso definir um segmento sobre uma porção de memória contígua de um \textit{cluster}. Outros \textit{clusters} podem então clonar este segmento, utilizando o \textit{id} próprio e único deste, o qual foi definido na sua criação. Após a clonagem, operações do tipo \texttt{put} e \texttt{get} podem ser realizadas sobre aquele segmento. A operação \texttt{get} copia um intervalo de dados, dentro do segmento, para dentro da memória local de um \textit{cluster}. Já a operação \texttt{put} envia um dado da memória local do \textit{cluster} para um intervalo de memória contido no segmento. Também existem inúmeras operações variantes das \texttt{put}/\texttt{get}, por exemplo, funções que trabalham com intervalos espaçados dentro de um segmento, intervalos de blocos 2D e até 3D, entre outras. A figura 2 exemplifica, para melhor visualização, as etapas de iteração com a \api \async citadas acima.
 
 \begin{figure}[H]
 \centering
@@ -152,7 +152,7 @@ Em primeiro lugar, é preciso definir um segmento sobre uma porção de memória
 
 \subsection{Trabalhos Correlatos}
 
-A fim de prover uma solução concreta para comparação do \mppa com outros processadores do estado da arte, \textit{Souza} \etal construíram a primeira versão do \capb \cite{Castro-Souza-CCPE:2016}. O artigo apresentando os resultados de comparação entre processadores, deste \textit{benchmark}, foi  de extrema importância na realização deste trabalho, visto que utilizou-se estes como base para comparação com a nova versão otimizada. Além disso, o artigo explica detalhadamente como foi implementado cada \textit{kernel}, citando métodos de paralelização e tamanho de cargas. \textit{Hascoet} \etal \cite{Hascoet2017} desenvolveram uma \api, sendo esta a utilizada na nossa otimização, inspirada nas bibliotecas de comunicação unilateral utilizadas nos supercomputadores, como o \textit{Sunway TaihuLight}, seguindo as diretivas \textit{async} da OpenCL. \textit{Podesta} \etal \cite{Podesta2018} implementaram uma nova versão do \textit{framework} PSkel para o \mppa, o qual prove uma camada de abstração para aplicações \textit{stencil}. Todos estes trabalhos complementaram a implementação otimizada dos \textit{kernels} do \capb.
+A fim de prover uma solução concreta para comparação do \mppa com outros processadores do estado da arte, \textit{Souza} \etal construíram a primeira versão do \capb \cite{Castro-Souza-CCPE:2016}. O artigo apresentando os resultados de comparação entre processadores, deste \textit{benchmark}, foi-se de extrema importância na realização deste trabalho, visto que utilizou-se estes como base para comparação com a nova versão otimizada. Além disso, o artigo explica detalhadamente como foi implementado cada \textit{kernel}, citando métodos de paralelização e tamanho de cargas. \textit{Hascoet} \etal \cite{Hascoet2017} desenvolveram uma \api, sendo esta a utilizada na nossa otimização, inspirada nas bibliotecas de comunicação unilateral utilizadas nos supercomputadores, como o \textit{Sunway TaihuLight}, seguindo as diretivas \textit{async} da OpenCL. \textit{Podesta} \etal \cite{Podesta2018} implementaram uma nova versão do \textit{framework} PSkel para o \mppa, o qual prove uma camada de abstração para aplicações \textit{stencil}. Todos estes trabalhos complementaram a implementação otimizada dos \textit{kernels} do \capb.
 
 \section{Proposta e Implementação de Otimização no \capb}
 \label{sec:capbMPPA}
@@ -183,13 +183,6 @@ Para a otimização deste \textit{kernel}, foram criados 3 segmentos sobre os da
 
 Nesta última otimização, foi criado um segmento sobre todos os \textit{minibuckets} a serem passados para cada \cc em determinada iteração. Assim, como temos, no \mppa, 16 \ccs ao total, este segmento foi criado sobre um \textit{array} de 16 posições, onde cada posição possui um \textit{minibucket} (em execuções com menos de 16 \ccs, as posições extras não são utilizadas). Como o \textit{array} é do tipo inteiro, há uma simplificação na hora de passar a informação aos \ccs. Para realizar a comunicação, os elementos de um \textit{minibucket} são colocados no espaço do segmento reservado ao \cc sendo iterado naquele instante, enviando um sinal a este \cc de que o dado está pronto para ser computado. Também foram realizadas otimizações nas lógicas de ordenamento. Na antiga versão, para qualquer variação de classe de problema, a ordenação, nos \ccs, era feita sempre com o número máximo de elementos permitidos, o que tomava um tempo muito elevado na aplicação. Na nova versão, é realizado a ordenação dos elementos passados somados a, no máximo, 16 novos elementos, onde todos estes novos possuem o valor inteiro máximo possível. Isto é possível, pois como há 16 \pes em cada \cc, precisamos que o número de elementos passados para ordenação seja sempre divisível por 16, a fim de paralelizar o trabalho. A antiga versão utilizava o número máximo, pois este era também divisível por 16. Após realizar o ordenamento, os \ccs colocam o \textit{array} de volta no mesmo intervalo dentro do segmento de \textit{minibuckets}, enviando um sinal ao \textit{master} de que o trabalho foi feito e o dado está pronto.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=15cm, keepaspectratio]{figs/execution-time.pdf}
-\caption{Tempos de execução de cada aplicação, variando-se o número de \textit{clusters} para a classe \textit{default}.}\par
-\label{fig:executiontime}
-\end{figure}
-
 \section{Resultados}
 \label{sec:resultados}
 
@@ -201,7 +194,14 @@ Também justifica-se o tempo e gasto energético maior nas aplicações GF e FAS
 
 Ambas as aplicações, FAST e GF, estão com a mesma lógica, pois utilizam o \textit{master} somente para definição de tarefas e os \textit{slaves} para os cálculos. Assim, ao analisar os tempos médios de computação dos \textit{slaves} e de comunicação, vemos uma redução em todas as variações de execução, como por exemplo, na variação de execução com a classe \textit{default} utilizando 16 \textit{clusters}, onde o tempo médio dos \ccs foi de 0,8 segundos para a versão antiga, tomando 1,7 segundos de comunicação, enquanto que na nova, o tempo médio foi de 0,36 segundos, utilizando 1,08 segundos de comunicação. Da mesma maneira, como o gasto energético considera todo o tempo de execução, ou seja, o total citado acima, este também ficou maior para as aplicações GF, FAST e KM.
 
-\begin{figure}[t]
+\begin{figure}[H]
+\centering
+\includegraphics[width=15cm, keepaspectratio]{figs/execution-time.pdf}
+\caption{Tempos de execução de cada aplicação, variando-se o número de \textit{clusters} para a classe \textit{default}.}\par
+\label{fig:executiontime}
+\end{figure}
+
+\begin{figure}[H]
 \centering
 \includegraphics[width=15cm, keepaspectratio]{figs/power.pdf}
 \caption{Gasto energético cada aplicação, variando-se o número de \textit{clusters} para a classe \textit{default}.}\par
