@@ -13,6 +13,7 @@
 \usepackage{multirow}
 \usepackage{fancyhdr}
 \usepackage{tabu}
+\usepackage{float}
 \usepackage{todonotes}
 \usepackage[acronym,nowarn]{glossaries}
 \input{acronyms.tex}
@@ -139,18 +140,19 @@ Originalmente, as aplicações voltadas ao \mppa foram desenvolvidas explorando 
 
 Recentemente, a Kalray disponibilizou uma nova \api para comunicação assíncrona e unilateral entre os \textit{clusters} do \mppa, a \async. Esta nova \api abstrai o modelo de memória distribuído do \mppa e simula um contexto de memória compartilhada. Desta maneia, é possível, em um determinado \textit{cluster}, realizar operações assíncronas diretamente sobre os espaços de memória de outros \textit{clusters}. Para isso, a \api conta com diversas funcionalidades.
 
-Em primeiro lugar, é preciso definir um segmento sobre uma porção de memória contígua de um \textit{cluster}. Outros \textit{clusters} podem então clonar este segmento, utilizando o \textit{id} próprio e único deste, o qual foi definido na sua criação. Após a clonagem, operações do tipo \texttt{put} e \texttt{get} podem ser realizadas sobre aquele segmento. A operação \texttt{get} copia um intervalo de dados, dentro do segmento, para dentro da memória local de um \textit{cluster}. Já a operação \texttt{put} envia um dado da memória local do \textit{cluster} para um intervalo de memória contido no segmento. Também existem inúmeras operações variantes das \texttt{put}/\texttt{get}, por exemplo, funções que trabalham com intervalos espaçados dentro de um segmento, intervalos de blocos 2D e até 3D, entre outras.
+Em primeiro lugar, é preciso definir um segmento sobre uma porção de memória contígua de um \textit{cluster}. Outros \textit{clusters} podem então clonar este segmento, utilizando o \textit{id} próprio e único deste, o qual foi definido na sua criação. Após a clonagem, operações do tipo \texttt{put} e \texttt{get} podem ser realizadas sobre aquele segmento. A operação \texttt{get} copia um intervalo de dados, dentro do segmento, para dentro da memória local de um \textit{cluster}. Já a operação \texttt{put} envia um dado da memória local do \textit{cluster} para um intervalo de memória contido no segmento. Também existem inúmeras operações variantes das \texttt{put}/\texttt{get}, por exemplo, funções que trabalham com intervalos espaçados dentro de um segmento, intervalos de blocos 2D e até 3D, entre outras. A figura 2 exemplifica, para melhor visualização, as etapas de iteração com a \api \async citadas acima.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=9cm, keepaspectratio]{figs/putget.pdf}
 \caption{Etapas da utilização da \api \async.}\par
 \label{fig:asyncOverview}
 \end{figure}
 
-\todo[inline]{A Figura~\ref{fig:asyncOverview} mostra um exemplo de ...}
 
 \subsection{Trabalhos Correlatos}
+
+A fim de prover uma solução concreta para comparação do \mppa com outros processadores do estado da arte, \textit{Souza} \etal construíram a primeira versão do \capb \cite{Castro-Souza-CCPE:2016}. O artigo apresentando os resultados de comparação entre processadores, deste \textit{benchmark}, foi-se de extrema importância na realização deste trabalho, visto que utilizou-se estes como base para comparação com a nova versão otimizada. Além disso, o artigo explica detalhadamente como foi implementado cada \textit{kernel}, citando métodos de paralelização e tamanho de cargas. \textit{Hascoet} \etal \cite{Hascoet2017} desenvolveram uma \api, sendo esta a utilizada na nossa otimização, inspirada nas bibliotecas de comunicação unilateral utilizadas nos supercomputadores, como o \textit{Sunway TaihuLight}, seguindo as diretivas \textit{async} da OpenCL. \textit{Podesta} \etal \cite{Podesta2018} implementaram uma nova versão do \textit{framework} PSkel para o \mppa, o qual prove uma camada de abstração para aplicações \textit{stencil}. Todos estes trabalhos complementaram a implementação otimizada dos \textit{kernels} do \capb.
 
 \section{Proposta e Implementação de Otimização no \capb}
 \label{sec:capbMPPA}
@@ -167,7 +169,7 @@ Funções que setavam um novo pivô sobre a linha da matriz sendo iterada em alg
 
 \subsection{Alterações no K-Means}
 
-Neste \textit{kernel}, diversas simplificações foram feitas. Primeiramente, para criar somente um segmento sobre a porção de dados a ser apurada e utilizar a \async de modo otimizado, foi necessário transformar o modelo de dados da aplicação. Antigamente, os pontos eram definidos como \textit{structs}, chamadas de vetores, contendo o tamanho (dimensão do vetor) e um ponteiro para os elementos (coordenadas do vetor). Porém, como todos os vetores possuem o mesmo tamanho, já que a dimensão é tratada globalmente, foi possível otimizar este modelo de dados, setando todos os pontos em um único \textit{array} unidimensional, o qual criou-se um segmento sobre. Vale salientar que a criação deste \textit{array} toma muito menos instruções do que a criação do \textit{array} de \textit{arrays} anterior. Desta maneira, em um cenário com $\mathnormal{P}$ pontos, todos com dimensão $\mathnormal{X}$, cada ponto ocupa $\mathnormal{X}$ posições do \textit{array} e o tamanho total deste é de $\mathnormal{X}$ $\times$ $\mathnormal{P}$ posições. Para recalcular os \textit{centroids}, na antiga versão, toda a computação de cálculo da distância euclidiana média era feita nos \ccs. Isto requeria que os \ccs enviassem a informação sobre suas populações parciais para os \textit{clusters} de \io, os quais passariam de volta a soma destes dados a todos os \ccs. Já na nova, nos \ccs é realizado somente a primeira etapa deste cálculo, sendo esta a soma dos seus vetores parciais. Para calcular a média, a população total é necessária, a qual está facilmente disponível nos \textit{clusters} de \io após determinada iteração. Assim, menos comunicações são feitas entre \textit{clusters}, \todo{na versão antiga não tinha put/get}{mais especificamente, 3 operações \textit{GET} e 3 \textit{PUT}, ao contrario das 5 operações \textit{GET} e 5 \textit{PUT} da antiga versão}.
+Neste \textit{kernel}, diversas simplificações foram feitas. Primeiramente, para criar somente um segmento sobre a porção de dados a ser apurada e utilizar a \async de modo otimizado, foi necessário transformar o modelo de dados da aplicação. Antigamente, os pontos eram definidos como \textit{structs}, chamadas de vetores, contendo o tamanho (dimensão do vetor) e um ponteiro para os elementos (coordenadas do vetor). Porém, como todos os vetores possuem o mesmo tamanho, já que a dimensão é tratada globalmente, foi possível otimizar este modelo de dados, setando todos os pontos em um único \textit{array} unidimensional, o qual criou-se um segmento sobre. Vale salientar que a criação deste \textit{array} toma muito menos instruções do que a criação do \textit{array} de \textit{arrays} anterior. Desta maneira, em um cenário com $\mathnormal{P}$ pontos, todos com dimensão $\mathnormal{X}$, cada ponto ocupa $\mathnormal{X}$ posições do \textit{array} e o tamanho total deste é de $\mathnormal{X}$ $\times$ $\mathnormal{P}$ posições. Para recalcular os \textit{centroids}, na antiga versão, toda a computação de cálculo da distância euclidiana média era feita nos \ccs. Isto requeria que os \ccs enviassem a informação sobre suas populações parciais para os \textit{clusters} de \io, os quais passariam de volta a soma destes dados a todos os \ccs. Já na nova, nos \ccs é realizado somente a primeira etapa deste cálculo, sendo esta a soma dos seus vetores parciais. Para calcular a média, a população total é necessária, a qual está facilmente disponível nos \textit{clusters} de \io após determinada iteração. Assim, menos comunicações são feitas entre \textit{clusters}, mais especificamente, 3 operações \textit{GET} e 3 \textit{PUT}, ao contrario das 5 operações \textit{RECEIVE} e 5 \textit{SEND} da antiga versão.
 
 \subsection{Alterações no Gaussian Filter}
 
